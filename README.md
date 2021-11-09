@@ -32,3 +32,10 @@ Steps to create, update and delete terraform configuration:
 8) terraform plan -var-file="filename.tfvars"
 9) terraform apply -var-file="filename.tfvars"
 10) To destroy infra, terraform destroy -var-file="filename.tfvars"
+
+Steps to manage CI-CD:
+
+1)Update CI-CD workflow in .github/workflows folder
+2)pull_request.yml file is used for configure the workflow to be run on pull request
+3)push.yml is used to configure the workflow to be run on push request
+4)AMI is built as a part of the workflow
