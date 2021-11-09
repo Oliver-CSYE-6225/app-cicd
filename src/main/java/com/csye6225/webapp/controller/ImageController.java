@@ -42,7 +42,7 @@ public class ImageController {
     @Autowired
     CommonUtilsService commonUtilsService;
 
-    @PostMapping(path = "/v1/user/self/pic", produces = "application/json")
+    @PostMapping(path = "/v2/user/self/pic", produces = "application/json")
     public ResponseEntity<String> uploadFile(@RequestHeader HttpHeaders headers, HttpServletRequest request) {
 
         String authorization = headers.getFirst("Authorization");
