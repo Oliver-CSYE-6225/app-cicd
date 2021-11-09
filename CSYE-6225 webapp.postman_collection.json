@@ -1,0 +1,101 @@
+{
+	"info": {
+		"_postman_id": "9184a1c1-f591-4f08-8e6b-c40020dd0e5f",
+		"name": "CSYE-6225 webapp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get User",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic ci5zQGdtYWlsLmNvbTpyc0AxMjM0",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/v1/user/self",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"user",
+						"self"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"first_name\": \"Random2\",\n  \"last_name\": \"Sam2\",\n  \"password\": \"rs@123\",\n  \"username\": \"r2.s2@gmail.com\",\n  \"account_created\": 8372,\n  \"account_updated\": \"Hello World\",\n  \"radomstring\": 27527\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic ci5zQGdtYWlsLmNvbTpyc0AxMjM0",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"first_name\": \"Random1\",\n  \"last_name\": \"Sam1\",\n  \"password\": \"rs@1234\",\n  \"username\": \"john.doe@gmail.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/user/self",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"user",
+						"self"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

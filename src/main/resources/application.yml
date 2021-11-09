@@ -1,0 +1,16 @@
+cloud:
+  aws:
+    stack:
+      auto: false
+
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
+
+application:
+  bucket:
+    name: ${s3_bucket_name}
