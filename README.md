@@ -18,4 +18,17 @@ Steps to Built the Application:
 
 Steps to Run Tests:<br>
 1) mvn test
-change
+
+
+Steps to create, update and delete terraform configuration:
+
+1)install terraform on your system
+2)Configure aws profiles on aws cli with the following command [aws configure --profile profilename]
+3) Create .tfvars file to provide values for the variables used in variables.tf
+4) Configure the profile aws_profile var for with the profilename used above
+5) cd into the infrastructure repo directory and run following commands
+6) terraform init
+7) terraform fmt
+8) terraform plan -var-file="filename.tfvars"
+9) terraform apply -var-file="filename.tfvars"
+10) To destroy infra, terraform destroy -var-file="filename.tfvars"
