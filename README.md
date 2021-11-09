@@ -21,7 +21,6 @@ Steps to Run Tests:<br>
 
 
 Steps to create, update and delete terraform configuration:
-
 1)install terraform on your system
 2)Configure aws profiles on aws cli with the following command [aws configure --profile profilename]
 3) Create .tfvars file to provide values for the variables used in variables.tf
