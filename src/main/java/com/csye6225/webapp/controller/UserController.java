@@ -43,7 +43,7 @@ public class UserController {
     @Autowired
     CommonUtilsService commonUtilsService;
 
-    @GetMapping(path = "/v1/user/self", produces = "application/json")
+    @GetMapping(path = "/v2/user/self", produces = "application/json")
     public ResponseEntity<String> getUser(@RequestHeader HttpHeaders headers) {
 
         String authorization = headers.getFirst("Authorization");
@@ -67,7 +67,7 @@ public class UserController {
         return ResponseEntity.ok().body(commonUtilsService.getUserAsJSON(userObj).toString());
     }
 
-    @PostMapping(path = "/v1/user", produces = "application/json")
+    @PostMapping(path = "/v2/user", produces = "application/json")
     public ResponseEntity<String> postUser(@RequestHeader HttpHeaders headers, @RequestBody String reqBody) {
         JSONObject reqObj = new JSONObject(reqBody);
         String errorString = validationService.validateSaveObject(reqObj);
@@ -107,7 +107,7 @@ public class UserController {
     }
 
 
-    @PutMapping(path = "/v1/user/self", produces = "application/json")
+    @PutMapping(path = "/v2/user/self", produces = "application/json")
     public ResponseEntity<String> putUser(@RequestHeader HttpHeaders headers, @RequestBody String reqBody) {
         String authorization = headers.getFirst("Authorization");
         String decodedTokenString = authenticationService.decodeBasicAuthToken(authorization);

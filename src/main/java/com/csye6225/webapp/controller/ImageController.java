@@ -42,7 +42,7 @@ public class ImageController {
     @Autowired
     CommonUtilsService commonUtilsService;
 
-    @PostMapping(path = "/v1/user/self/pic", produces = "application/json")
+    @PostMapping(path = "/v2/user/self/pic", produces = "application/json")
     public ResponseEntity<String> uploadFile(@RequestHeader HttpHeaders headers, HttpServletRequest request) {
 
         String authorization = headers.getFirst("Authorization");
@@ -115,7 +115,7 @@ public class ImageController {
         }
     }
 
-    @GetMapping(path = "/v1/user/self/pic", produces = "application/json")
+    @GetMapping(path = "/v2/user/self/pic", produces = "application/json")
     public ResponseEntity<String> downloadFile(@RequestHeader HttpHeaders headers) {
         String authorization = headers.getFirst("Authorization");
         String decodedTokenString = authenticationService.decodeBasicAuthToken(authorization);
@@ -145,7 +145,7 @@ public class ImageController {
         }
     }
 
-    @DeleteMapping(path ="/v1/user/self/pic")
+    @DeleteMapping(path ="/v2/user/self/pic")
     public ResponseEntity<String> deleteFile(@RequestHeader HttpHeaders headers) {
         String authorization = headers.getFirst("Authorization");
         String decodedTokenString = authenticationService.decodeBasicAuthToken(authorization);
