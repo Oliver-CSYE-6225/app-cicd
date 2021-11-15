@@ -7,6 +7,9 @@ import com.csye6225.webapp.service.CommonUtilsService;
 import com.csye6225.webapp.service.UserService;
 import com.csye6225.webapp.service.ValidationService;
 import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.timgroup.statsd.NonBlockingStatsDClient;
+import com.timgroup.statsd.StatsDClient;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -43,9 +46,15 @@ public class UserController {
     @Autowired
     CommonUtilsService commonUtilsService;
 
+    private static final StatsDClient statsd = new NonBlockingStatsDClient("my.prefix", "localhost", 8125);
+
+
     @GetMapping(path = "/v2/user/self", produces = "application/json")
     public ResponseEntity<String> getUser(@RequestHeader HttpHeaders headers) {
-
+        statsd.incrementCounter("bar");
+        statsd.recordGaugeValue("baz", 100);
+        statsd.recordExecutionTime("bag", 25);
+        statsd.recordSetEvent("qux", "one");
         String authorization = headers.getFirst("Authorization");
         String decodedTokenString = authenticationService.decodeBasicAuthToken(authorization);
         String[] tokens = new String[2];
