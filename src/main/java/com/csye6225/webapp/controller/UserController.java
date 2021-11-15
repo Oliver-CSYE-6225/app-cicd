@@ -48,6 +48,11 @@ public class UserController {
 
     private static final StatsDClient statsd = new NonBlockingStatsDClient("my.prefix", "localhost", 8125);
 
+    @GetMapping(path = "/", produces = "application/json")
+    public ResponseEntity<String> rootURl(@RequestHeader HttpHeaders headers) {
+        
+        return ResponseEntity.ok().body("");
+    }
 
     @GetMapping(path = "/v2/user/self", produces = "application/json")
     public ResponseEntity<String> getUser(@RequestHeader HttpHeaders headers) {
