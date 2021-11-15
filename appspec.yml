@@ -6,6 +6,8 @@ files:
     destination: /home/ubuntu/webapp
   - source: webapp.service
     destination: /home/ubuntu/webapp
+  - source: webapp_cloudwatch_config.json
+    destination: /home/ubuntu/webapp
 hooks:
   AfterInstall:
   - location: ./codedeploy/afterInstall.sh

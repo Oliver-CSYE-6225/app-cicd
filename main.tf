@@ -183,22 +183,22 @@ resource "aws_codedeploy_deployment_group" "codedeploy_group" {
   }
 }
 
-data "aws_route53_zone" "selected_zone" {
-  name         = var.zone_name
-}
+// data "aws_route53_zone" "selected_zone" {
+//   name         = var.zone_name
+// }
 
-data "aws_instance" "ec2_instance" {
+// data "aws_instance" "ec2_instance" {
 
-  filter {
-    name   = "tag:Name"
-    values = ["csye-6225-1"]
-  }
-}
+//   filter {
+//     name   = "tag:Name"
+//     values = ["csye-6225-1"]
+//   }
+// }
 
-resource "aws_route53_record" "webapp_record" {
-  zone_id = data.aws_route53_zone.selected_zone.zone_id
-  name    = var.domain_name
-  type    = "A"
-  ttl     = "60"
-  records = [data.aws_instance.ec2_instance.public_ip]
-}
+// resource "aws_route53_record" "webapp_record" {
+//   zone_id = data.aws_route53_zone.selected_zone.zone_id
+//   name    = var.domain_name
+//   type    = "A"
+//   ttl     = "60"
+//   records = [data.aws_instance.ec2_instance.public_ip]
+// }
