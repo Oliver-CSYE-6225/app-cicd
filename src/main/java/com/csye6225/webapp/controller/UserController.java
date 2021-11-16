@@ -11,6 +11,8 @@ import com.timgroup.statsd.NonBlockingStatsDClient;
 import com.timgroup.statsd.StatsDClient;
 
 import org.json.JSONObject;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
@@ -50,6 +52,9 @@ public class UserController {
     StatsDClient statsd;
     // private static final StatsDClient statsd = new NonBlockingStatsDClient("my.prefix", "localhost", 8125);
 
+    private static final Logger LOGGER=LoggerFactory.getLogger(UserController.class);
+
+
     @GetMapping(path = "/", produces = "application/json")
     public ResponseEntity<String> rootURl(@RequestHeader HttpHeaders headers) {
         
@@ -62,6 +67,7 @@ public class UserController {
         statsd.recordGaugeValue("baz", 100);
         statsd.recordExecutionTime("bag", 25);
         statsd.recordSetEvent("qux", "one");
+        LOGGER.info("Get User Called");
         String authorization = headers.getFirst("Authorization");
         String decodedTokenString = authenticationService.decodeBasicAuthToken(authorization);
         String[] tokens = new String[2];
