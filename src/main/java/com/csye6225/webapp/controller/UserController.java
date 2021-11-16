@@ -46,7 +46,9 @@ public class UserController {
     @Autowired
     CommonUtilsService commonUtilsService;
 
-    private static final StatsDClient statsd = new NonBlockingStatsDClient("my.prefix", "localhost", 8125);
+    @Autowired
+    StatsDClient statsd;
+    // private static final StatsDClient statsd = new NonBlockingStatsDClient("my.prefix", "localhost", 8125);
 
     @GetMapping(path = "/", produces = "application/json")
     public ResponseEntity<String> rootURl(@RequestHeader HttpHeaders headers) {
