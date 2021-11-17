@@ -63,29 +63,30 @@ public class UserController {
 
     @GetMapping(path = "/v2/user/self", produces = "application/json")
     public ResponseEntity<String> getUser(@RequestHeader HttpHeaders headers) {
-        statsd.incrementCounter("bar");
-        statsd.recordGaugeValue("baz", 100);
-        statsd.recordExecutionTime("bag", 25);
-        statsd.recordSetEvent("qux", "one");
+        statsd.incrementCounter("/v2/user/self");
+        // statsd.recordGaugeValue("baz", 100);
+        // statsd.recordSetEvent("qux", "one");
         LOGGER.info("Get User Called");
         String authorization = headers.getFirst("Authorization");
         String decodedTokenString = authenticationService.decodeBasicAuthToken(authorization);
         String[] tokens = new String[2];
-
+        long startTime = System.currentTimeMillis();
         if(decodedTokenString != null){
             if(decodedTokenString.split(":").length == 2) {
                 tokens = decodedTokenString.split(":", 2);
             }
             if(!authenticationService.authenticateUser(tokens)){
+                statsd.recordExecutionTime("/v2/user/self", startTime -  System.currentTimeMillis());
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(new JSONObject().put("message","Authorization Refused for the credentials provided.").toString());
             }
         } else{
+            statsd.recordExecutionTime("/v2/user/self", startTime -  System.currentTimeMillis());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new JSONObject().put("message","Authorization Refused for the credentials provided.").toString());
         }
-
         User userObj =  userService.getUser(tokens[0]);
+        statsd.recordExecutionTime("/v2/user/self", startTime -  System.currentTimeMillis());
         return ResponseEntity.ok().body(commonUtilsService.getUserAsJSON(userObj).toString());
     }
 
