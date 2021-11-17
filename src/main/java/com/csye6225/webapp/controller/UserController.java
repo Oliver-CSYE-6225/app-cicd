@@ -70,7 +70,6 @@ public class UserController {
         LOGGER.info("Get User Called");
         LOGGER.info("This is information");
 		LOGGER.debug("This is debug");
-		LOGGER.error("This is error");
         String authorization = headers.getFirst("Authorization");
         String decodedTokenString = authenticationService.decodeBasicAuthToken(authorization);
         String[] tokens = new String[2];
@@ -80,21 +79,25 @@ public class UserController {
             }
             if(!authenticationService.authenticateUser(tokens)){
                 statsd.recordExecutionTime("GetUser Execution Time", startTime -  System.currentTimeMillis());
+                LOGGER.error("Unauthorized User");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(new JSONObject().put("message","Authorization Refused for the credentials provided.").toString());
             }
         } else{
             statsd.recordExecutionTime("GetUser Execution Time", startTime -  System.currentTimeMillis());
+            LOGGER.error("Unauthorized User");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new JSONObject().put("message","Authorization Refused for the credentials provided.").toString());
         }
         User userObj =  userService.getUser(tokens[0]);
+
         statsd.recordExecutionTime("GetUser Execution Time", startTime -  System.currentTimeMillis());
         return ResponseEntity.ok().body(commonUtilsService.getUserAsJSON(userObj).toString());
     }
 
     @PostMapping(path = "/v2/user", produces = "application/json")
     public ResponseEntity<String> postUser(@RequestHeader HttpHeaders headers, @RequestBody String reqBody) {
+        LOGGER.info("Post User Called");
         long startTime = System.currentTimeMillis();
         JSONObject reqObj = new JSONObject(reqBody);
         String errorString = validationService.validateSaveObject(reqObj);
@@ -122,8 +125,10 @@ public class UserController {
             if(e.getMessage().contains("constraint [usertable_username_key]")){
                 resObj.put("message", "Username already exists.");
                 statsd.recordExecutionTime("Post User Execution Time", startTime -  System.currentTimeMillis());
+                LOGGER.error("Duplicate Username");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resObj.toString());
             } else{
+                LOGGER.error("Error in saving user Information");
                 resObj.put("message", "Unable to Save User Information. Please try again.");
                 statsd.recordExecutionTime("Post User Execution Time", startTime -  System.currentTimeMillis());
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resObj.toString());
@@ -138,6 +143,7 @@ public class UserController {
 
     @PutMapping(path = "/v2/user/self", produces = "application/json")
     public ResponseEntity<String> putUser(@RequestHeader HttpHeaders headers, @RequestBody String reqBody) {
+        LOGGER.info("Post User Called");
         long startTime = System.currentTimeMillis();
         String authorization = headers.getFirst("Authorization");
         String decodedTokenString = authenticationService.decodeBasicAuthToken(authorization);
@@ -196,6 +202,7 @@ public class UserController {
             resObj.put("statusCode", HttpStatus.INTERNAL_SERVER_ERROR);
             resObj.put("message", "Unable to Update User Information. Please try again.");
             statsd.recordExecutionTime("Update User Execution Time", startTime -  System.currentTimeMillis());
+            LOGGER.error("Unable to update user information");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resObj.toString());
         }
 
