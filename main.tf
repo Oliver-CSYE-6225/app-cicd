@@ -171,16 +171,19 @@ resource "aws_codedeploy_deployment_group" "codedeploy_group" {
     deployment_type = "IN_PLACE"
   }
 
+
+  autoscaling_groups = ["webapp_autoscale_group"]
+
   auto_rollback_configuration {
     enabled = true
     events  = ["DEPLOYMENT_FAILURE"]
   }
 
-  ec2_tag_filter {
-    key = "instance_identifier"
-    type = "KEY_AND_VALUE"
-    value = "webapp_deploy"
-  }
+  // ec2_tag_filter {
+  //   key = "instance_identifier"
+  //   type = "KEY_AND_VALUE"
+  //   value = "webapp_deploy"
+  // }
 }
 
 data "aws_route53_zone" "selected_zone" {
