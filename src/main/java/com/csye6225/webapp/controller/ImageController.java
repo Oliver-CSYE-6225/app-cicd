@@ -50,8 +50,10 @@ public class ImageController {
 
     private static final Logger LOGGER=LoggerFactory.getLogger(UserController.class);
 
+
     @PostMapping(path = "/v2/user/self/pic", produces = "application/json")
     public ResponseEntity<String> uploadFile(@RequestHeader HttpHeaders headers, HttpServletRequest request) {
+        LOGGER.info("Starting uploading User pic");
         long startTime = System.currentTimeMillis();
         String authorization = headers.getFirst("Authorization");
         String decodedTokenString = authenticationService.decodeBasicAuthToken(authorization);
@@ -75,6 +77,7 @@ public class ImageController {
         String contentType = request.getContentType();
         byte[] pictureBA = new byte[0];
         if(!contentType.contains("image/")){
+            LOGGER.error("File uploaded is not an image");
             return new ResponseEntity<String>("File should be Image", HttpStatus.BAD_REQUEST);
         } else {
             InputStream pictureIS = null;
@@ -83,6 +86,7 @@ public class ImageController {
                 pictureBA = IOUtils.toByteArray(pictureIS);
             } catch (Exception e) {
                 e.printStackTrace();
+                LOGGER.error("Image file uploaded is corrupted");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(new JSONObject().put("message","Image file is corrupted").toString());
             }
@@ -127,6 +131,7 @@ public class ImageController {
 
     @GetMapping(path = "/v2/user/self/pic", produces = "application/json")
     public ResponseEntity<String> downloadFile(@RequestHeader HttpHeaders headers) {
+        LOGGER.info("Get Image Metadata called");
         long startTime = System.currentTimeMillis();
         String authorization = headers.getFirst("Authorization");
         String decodedTokenString = authenticationService.decodeBasicAuthToken(authorization);
@@ -153,6 +158,7 @@ public class ImageController {
             return ResponseEntity.status(HttpStatus.CREATED).body(commonUtilsService.getImageAsJSON(i).toString());
         } catch(NotFoundException e){
             statsd.recordExecutionTime("Get Image Execution Time", startTime -  System.currentTimeMillis());
+            LOGGER.error("No profile pic exists for image uploaded");
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new JSONObject().put("message","No Profile Pic exists for " + u.getUsername()).toString());
         }
@@ -160,6 +166,7 @@ public class ImageController {
 
     @DeleteMapping(path ="/v2/user/self/pic")
     public ResponseEntity<String> deleteFile(@RequestHeader HttpHeaders headers) {
+        LOGGER.info("Delete image metadata called");
         long startTime = System.currentTimeMillis();
         String authorization = headers.getFirst("Authorization");
         String decodedTokenString = authenticationService.decodeBasicAuthToken(authorization);
@@ -189,6 +196,7 @@ public class ImageController {
                     .body("");
         } catch(NotFoundException e){
             statsd.recordExecutionTime("Delete Image Execution Time", startTime -  System.currentTimeMillis());
+            LOGGER.info("Image already deleted");
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new JSONObject().put("message","No Profile Pic exists for " + u.getUsername()).toString());
         }

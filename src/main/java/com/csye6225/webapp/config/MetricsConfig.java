@@ -13,7 +13,7 @@ public class MetricsConfig {
    public StatsDClient statsDClient(
            @Value("${metrics.statsd.host:localhost}") String host,
            @Value("${metrics.statsd.port:8125}") int port,
-           @Value("${metrics.prefix:example.app}") String prefix
+           @Value("webapp_csye6225") String prefix
    ) {
        return new NonBlockingStatsDClient(prefix, host, port);
    }
