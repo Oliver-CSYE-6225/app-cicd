@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import com.timgroup.statsd.StatsDClient;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,6 +22,9 @@ public class ImageStoreService {
 
     @Autowired
     private AmazonS3 s3Client;
+
+    @Autowired
+    StatsDClient statsd;
 
     public JSONObject uploadFile(MultipartFile file, String user_id) {
         // Convert multipart file to file object
@@ -51,7 +55,9 @@ public class ImageStoreService {
         }
 
         // Add picture to s3 bucket
+        long startTime = System.currentTimeMillis();
         s3Client.putObject(new PutObjectRequest(bucketName, filename, fileObject));
+        statsd.recordExecutionTime("Post Image S3", startTime -  System.currentTimeMillis());
         fileObject.delete();
 
         // Get Current Date
@@ -110,7 +116,9 @@ public class ImageStoreService {
 
 
     public String deleteFile(String fileName) {
+        long startTime = System.currentTimeMillis();
         s3Client.deleteObject(bucketName, fileName);
+        statsd.recordExecutionTime("Delete Image S3", startTime -  System.currentTimeMillis());
         return fileName + " removed ...";
     }
 
