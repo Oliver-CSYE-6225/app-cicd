@@ -6,7 +6,7 @@ User=username
 Type=simple
 
 [Service]
-ExecStart=sudo /usr/bin/java -jar /home/ubuntu/webapp/webapp-0.0.1-SNAPSHOT.jar SuccessExitStatus=143 
+ExecStart=sudo /usr/bin/java -jar /home/ubuntu/webapp/webapp-0.0.1-SNAPSHOT.jar >/home/ubuntu/log.txt 2>&1 & SuccessExitStatus=143 
 Restart=always
 StandardOutput=syslog
 StandardError=syslog
