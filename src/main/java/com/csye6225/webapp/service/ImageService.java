@@ -7,6 +7,7 @@ import com.csye6225.webapp.repository.UserRepository;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.timgroup.statsd.StatsDClient;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -16,8 +17,15 @@ public class ImageService {
     @Autowired
     ImageRepository imageRepository;
 
+    @Autowired
+    StatsDClient statsd;
+
     public Image getImageMetaData(UUID user_id) throws NotFoundException {
+        long startTime = System.currentTimeMillis();
+
         Optional<Image> image = imageRepository.findByUserId(user_id);
+
+        statsd.recordExecutionTime("Fetch Image Meta Execution Time", startTime -  System.currentTimeMillis());
 
 //        try{
 //            image.orElseThrow(() -> new NotFoundException("Not found: " + user_id));
@@ -30,12 +38,17 @@ public class ImageService {
     }
 
     public Image saveImageMetaData(Image image) {
-        return imageRepository.saveAndFlush(image);
+        long startTime = System.currentTimeMillis();
+        Image foo = imageRepository.saveAndFlush(image);
+        statsd.recordExecutionTime("Save Image Meta Execution Time", startTime -  System.currentTimeMillis());
+        return foo;
+
     }
 
     public void deleteImageMetaData(Image image) {
-
+        long startTime = System.currentTimeMillis();
          imageRepository.deleteById(image.getId());
+         statsd.recordExecutionTime("Delete Image Meta Execution Time", startTime -  System.currentTimeMillis());
     }
 
 }

@@ -6,6 +6,7 @@ import javassist.NotFoundException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.timgroup.statsd.StatsDClient;
 
 import java.util.Optional;
 
@@ -14,8 +15,13 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    StatsDClient statsd;
+
     public User getUser(String userName) {
+        long startTime = System.currentTimeMillis();
         Optional<User> user = userRepository.findByUserName(userName);
+        statsd.recordExecutionTime("Fetch User  Execution Time", startTime -  System.currentTimeMillis());
 
         try{
             user.orElseThrow(() -> new NotFoundException("Not found: " + userName));
@@ -27,7 +33,10 @@ public class UserService {
     }
 
     public User saveUser(User user) {
-        return userRepository.saveAndFlush(user);
+        long startTime = System.currentTimeMillis();
+        User foo = userRepository.saveAndFlush(user);
+        statsd.recordExecutionTime("Save/Update User  Execution Time", startTime -  System.currentTimeMillis());
+        return foo;
     }
 
 

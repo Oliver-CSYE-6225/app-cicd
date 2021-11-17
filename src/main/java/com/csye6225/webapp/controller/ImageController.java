@@ -17,7 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import com.timgroup.statsd.StatsDClient;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
@@ -42,9 +44,15 @@ public class ImageController {
     @Autowired
     CommonUtilsService commonUtilsService;
 
+    @Autowired
+    StatsDClient statsd;
+    // private static final StatsDClient statsd = new NonBlockingStatsDClient("my.prefix", "localhost", 8125);
+
+    private static final Logger LOGGER=LoggerFactory.getLogger(UserController.class);
+
     @PostMapping(path = "/v2/user/self/pic", produces = "application/json")
     public ResponseEntity<String> uploadFile(@RequestHeader HttpHeaders headers, HttpServletRequest request) {
-
+        long startTime = System.currentTimeMillis();
         String authorization = headers.getFirst("Authorization");
         String decodedTokenString = authenticationService.decodeBasicAuthToken(authorization);
         String[] tokens = new String[2];
@@ -100,6 +108,7 @@ public class ImageController {
             i.setFile_name(resp.getString("filename"));
             i.setUrl(resp.getString("url"));
             imageService.saveImageMetaData(i);
+            statsd.recordExecutionTime("Post Image Execution Time", startTime -  System.currentTimeMillis());
             return ResponseEntity.status(HttpStatus.CREATED).body(commonUtilsService.getImageAsJSON(i).toString());
         } catch(NotFoundException e){
             resp = imageStoreService.uploadFile(file, tokens[0]);
@@ -110,6 +119,7 @@ public class ImageController {
             i.setUser_id(u.getId());
             i.setUpload_date(new Date());
             imageService.saveImageMetaData(i);
+            statsd.recordExecutionTime("Post Image Execution Time", startTime -  System.currentTimeMillis());
             return ResponseEntity.status(HttpStatus.OK)
                     .body(commonUtilsService.getImageAsJSON(i).toString());
         }
@@ -117,6 +127,7 @@ public class ImageController {
 
     @GetMapping(path = "/v2/user/self/pic", produces = "application/json")
     public ResponseEntity<String> downloadFile(@RequestHeader HttpHeaders headers) {
+        long startTime = System.currentTimeMillis();
         String authorization = headers.getFirst("Authorization");
         String decodedTokenString = authenticationService.decodeBasicAuthToken(authorization);
         String[] tokens = new String[2];
@@ -138,8 +149,10 @@ public class ImageController {
         try{
             System.out.println(u.getId());
             Image i = imageService.getImageMetaData(u.getId());
+            statsd.recordExecutionTime("Get Image Execution Time", startTime -  System.currentTimeMillis());
             return ResponseEntity.status(HttpStatus.CREATED).body(commonUtilsService.getImageAsJSON(i).toString());
         } catch(NotFoundException e){
+            statsd.recordExecutionTime("Get Image Execution Time", startTime -  System.currentTimeMillis());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new JSONObject().put("message","No Profile Pic exists for " + u.getUsername()).toString());
         }
@@ -147,6 +160,7 @@ public class ImageController {
 
     @DeleteMapping(path ="/v2/user/self/pic")
     public ResponseEntity<String> deleteFile(@RequestHeader HttpHeaders headers) {
+        long startTime = System.currentTimeMillis();
         String authorization = headers.getFirst("Authorization");
         String decodedTokenString = authenticationService.decodeBasicAuthToken(authorization);
         String[] tokens = new String[2];
@@ -170,9 +184,11 @@ public class ImageController {
             Image image = imageService.getImageMetaData(u.getId());
             imageStoreService.deleteFile(image.getFile_name());
             imageService.deleteImageMetaData(image);
+            statsd.recordExecutionTime("Delete Image Execution Time", startTime -  System.currentTimeMillis());
             return ResponseEntity.status(HttpStatus.NO_CONTENT)
                     .body("");
         } catch(NotFoundException e){
+            statsd.recordExecutionTime("Delete Image Execution Time", startTime -  System.currentTimeMillis());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new JSONObject().put("message","No Profile Pic exists for " + u.getUsername()).toString());
         }
