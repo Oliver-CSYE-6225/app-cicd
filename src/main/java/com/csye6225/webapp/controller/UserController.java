@@ -61,7 +61,7 @@ public class UserController {
         return ResponseEntity.ok().body("");
     }
 
-    @GetMapping(path = "/v2/user/self", produces = "application/json")
+    @GetMapping(path = "/v1/user/self", produces = "application/json")
     public ResponseEntity<String> getUser(@RequestHeader HttpHeaders headers) {
         long startTime = System.currentTimeMillis();
         statsd.incrementCounter("/v2/user/self");
@@ -95,7 +95,7 @@ public class UserController {
         return ResponseEntity.ok().body(commonUtilsService.getUserAsJSON(userObj).toString());
     }
 
-    @PostMapping(path = "/v2/user", produces = "application/json")
+    @PostMapping(path = "/v1/user", produces = "application/json")
     public ResponseEntity<String> postUser(@RequestHeader HttpHeaders headers, @RequestBody String reqBody) {
         LOGGER.info("Post User Called");
         long startTime = System.currentTimeMillis();
@@ -141,7 +141,7 @@ public class UserController {
     }
 
 
-    @PutMapping(path = "/v2/user/self", produces = "application/json")
+    @PutMapping(path = "/v1/user/self", produces = "application/json")
     public ResponseEntity<String> putUser(@RequestHeader HttpHeaders headers, @RequestBody String reqBody) {
         LOGGER.info("Post User Called");
         long startTime = System.currentTimeMillis();
