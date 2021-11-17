@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-	<property name="LOG_HOME" value="D:/Logs/" />
+	<property name="LOG_HOME" value="/home/ubuntu" />
 	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
 			<Pattern>%date %level [%thread] %logger %msg%n</Pattern>
