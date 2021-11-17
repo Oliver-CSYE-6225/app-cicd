@@ -51,7 +51,7 @@ public class ImageController {
     private static final Logger LOGGER=LoggerFactory.getLogger(UserController.class);
 
 
-    @PostMapping(path = "/v2/user/self/pic", produces = "application/json")
+    @PostMapping(path = "/v1/user/self/pic", produces = "application/json")
     public ResponseEntity<String> uploadFile(@RequestHeader HttpHeaders headers, HttpServletRequest request) {
         LOGGER.info("Starting uploading User pic");
         long startTime = System.currentTimeMillis();
@@ -129,7 +129,7 @@ public class ImageController {
         }
     }
 
-    @GetMapping(path = "/v2/user/self/pic", produces = "application/json")
+    @GetMapping(path = "/v1/user/self/pic", produces = "application/json")
     public ResponseEntity<String> downloadFile(@RequestHeader HttpHeaders headers) {
         LOGGER.info("Get Image Metadata called");
         long startTime = System.currentTimeMillis();
@@ -164,7 +164,7 @@ public class ImageController {
         }
     }
 
-    @DeleteMapping(path ="/v2/user/self/pic")
+    @DeleteMapping(path ="/v1/user/self/pic")
     public ResponseEntity<String> deleteFile(@RequestHeader HttpHeaders headers) {
         LOGGER.info("Delete image metadata called");
         long startTime = System.currentTimeMillis();
