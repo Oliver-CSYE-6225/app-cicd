@@ -67,6 +67,9 @@ public class UserController {
         // statsd.recordGaugeValue("baz", 100);
         // statsd.recordSetEvent("qux", "one");
         LOGGER.info("Get User Called");
+        LOGGER.info("This is information");
+		LOGGER.debug("This is debug");
+		LOGGER.error("This is error");
         String authorization = headers.getFirst("Authorization");
         String decodedTokenString = authenticationService.decodeBasicAuthToken(authorization);
         String[] tokens = new String[2];
