@@ -1,5 +1,6 @@
 package com.csye6225.webapp.config;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -83,6 +84,14 @@ public class rdsConfig {
         DataSourceTransactionManager txm = new DataSourceTransactionManager(datasource);
         return txm;
     }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
+    JpaTransactionManager transactionManager = new JpaTransactionManager();
+    transactionManager.setEntityManagerFactory(emf);
+
+    return transactionManager;
+}
 
     // @Primary
     // @Bean
