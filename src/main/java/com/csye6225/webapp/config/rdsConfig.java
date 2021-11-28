@@ -13,18 +13,18 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 @Configuration
 public class rdsConfig {
-    // @Bean(name = "datasource1")
-    // @ConfigurationProperties(prefix="spring.datasource")
-    // @Primary
-    // public DataSource dataSource() {
-    //     return DataSourceBuilder.create().build();
-    // }
+    @Bean(name = "datasource1")
+    @ConfigurationProperties(prefix="spring.datasource")
+    @Primary
+    public DataSource primaryDataSource() {
+        return DataSourceBuilder.create().build();
+    }
 
-    // @Bean(name = "datasource2")
-    // @ConfigurationProperties(prefix="spring.datasource2")
-    // public DataSource dataSource2() {
-    //     return DataSourceBuilder.create().build();
-    // }
+    @Bean(name = "datasource2")
+    @ConfigurationProperties(prefix="spring.datasource2")
+    public DataSource secondaryDataSource() {
+        return DataSourceBuilder.create().build();
+    }
 
     // @Bean(name = "tm1")
     // @Autowired
