@@ -128,7 +128,7 @@ public class UserController {
                 LOGGER.error("Duplicate Username");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resObj.toString());
             } else{
-                LOGGER.error("Error in saving user Information");
+                LOGGER.error("Error in saving user Information" + e.getMessage());
                 resObj.put("message", "Unable to Save User Information. Please try again.");
                 statsd.recordExecutionTime("Post User Execution Time", startTime -  System.currentTimeMillis());
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resObj.toString());
