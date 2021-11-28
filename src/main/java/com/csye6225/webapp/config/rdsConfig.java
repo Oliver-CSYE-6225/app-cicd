@@ -32,11 +32,18 @@ public class rdsConfig {
         return firstDataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
     }
 
-    @Bean(name = "datasource2")
+    @Bean(name = "datasource1")
     @ConfigurationProperties("spring.datasource2")
-    public BasicDataSource secondDataSource() {
+    public BasicDataSource firstDataSource() {
         return DataSourceBuilder.create().type(BasicDataSource.class).build();
     }
+
+    // @Bean(name = "datasource2")
+    // @Primary
+    // @ConfigurationProperties("spring.datasource2")
+    // public BasicDataSource secondDataSource() {
+    //     return DataSourceBuilder.create().type(BasicDataSource.class).build();
+    // }
 
 
     // @Bean(name = "datasource1")
@@ -53,18 +60,18 @@ public class rdsConfig {
     //     return DataSourceBuilder.create().build();
     // }
 
-    // @Bean(name = "tm1")
-    // @Autowired
-    // @Primary
-    // DataSourceTransactionManager tm1(@Qualifier("datasource1") HikariDataSource datasource) {
-    //     DataSourceTransactionManager txm = new DataSourceTransactionManager(datasource);
-    //     return txm;
-    // }
+    @Bean(name = "tm1")
+    @Autowired
+    @Primary
+    DataSourceTransactionManager tm1(@Qualifier("datasource1") HikariDataSource datasource) {
+        DataSourceTransactionManager txm = new DataSourceTransactionManager(datasource);
+        return txm;
+    }
 
-    // @Bean(name = "tm2")
-    // @Autowired
-    // DataSourceTransactionManager tm2(@Qualifier("datasource2") BasicDataSource datasource) {
-    //     DataSourceTransactionManager txm = new DataSourceTransactionManager(datasource);
-    //     return txm;
-    // }
+    @Bean(name = "tm2")
+    @Autowired
+    DataSourceTransactionManager tm2(@Qualifier("datasource2") BasicDataSource datasource) {
+        DataSourceTransactionManager txm = new DataSourceTransactionManager(datasource);
+        return txm;
+    }
 }
