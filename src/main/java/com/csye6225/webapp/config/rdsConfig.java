@@ -32,11 +32,11 @@ public class rdsConfig {
         return firstDataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
     }
 
-    @Bean(name = "datasource1")
-    @ConfigurationProperties("spring.datasource2")
-    public BasicDataSource firstDataSource() {
-        return DataSourceBuilder.create().type(BasicDataSource.class).build();
-    }
+    // @Bean(name = "datasource1")
+    // @ConfigurationProperties("spring.datasource2")
+    // public BasicDataSource firstDataSource() {
+    //     return DataSourceBuilder.create().type(BasicDataSource.class).build();
+    // }
 
     @Bean(name = "datasource2")
     @ConfigurationProperties("spring.datasource2")
