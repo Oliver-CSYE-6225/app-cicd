@@ -2,8 +2,12 @@ package com.csye6225.webapp.config;
 
 import javax.sql.DataSource;
 
+import com.zaxxer.hikari.HikariDataSource;
+
+import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -13,18 +17,41 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 @Configuration
 public class rdsConfig {
-    @Bean(name = "datasource1")
-    @ConfigurationProperties(prefix="spring.datasource")
+
+    @Bean
     @Primary
-    public DataSource primaryDataSource() {
-        return DataSourceBuilder.create().build();
+    @ConfigurationProperties("spring.datasource")
+    public DataSourceProperties firstDataSourceProperties() {
+        return new DataSourceProperties();
     }
 
-    @Bean(name = "datasource2")
-    @ConfigurationProperties(prefix="spring.datasource2")
-    public DataSource secondaryDataSource() {
-        return DataSourceBuilder.create().build();
+    @Bean
+    @Primary
+    @ConfigurationProperties("spring.datasource.configuration")
+    public HikariDataSource firstDataSource(DataSourceProperties firstDataSourceProperties) {
+        return firstDataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
     }
+
+    @Bean
+    @ConfigurationProperties("spring.datasource2")
+    public BasicDataSource secondDataSource() {
+        return DataSourceBuilder.create().type(BasicDataSource.class).build();
+    }
+
+
+    // @Bean(name = "datasource1")
+    // @ConfigurationProperties(prefix="spring.datasource")
+    // @Primary
+    // public DataSource primaryDataSource() {
+    //     return DataSourceBuilder.create().build();
+    // }
+    
+
+    // @Bean(name = "datasource2")
+    // @ConfigurationProperties(prefix="spring.datasource2")
+    // public DataSource secondaryDataSource() {
+    //     return DataSourceBuilder.create().build();
+    // }
 
     // @Bean(name = "tm1")
     // @Autowired
