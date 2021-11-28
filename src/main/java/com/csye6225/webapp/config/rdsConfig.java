@@ -14,29 +14,32 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 public class rdsConfig {
 
-    @Bean
-    @Primary
-    @ConfigurationProperties("spring.datasource")
-    public DataSourceProperties firstDataSourceProperties() {
-        return new DataSourceProperties();
-    }
-
-    @Bean(name = "datasource1")
-    @Primary
-    @ConfigurationProperties("spring.datasource.configuration")
-    public HikariDataSource firstDataSource(DataSourceProperties firstDataSourceProperties) {
-        return firstDataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
-    }
+    // @Bean
+    // @Primary
+    // @ConfigurationProperties("spring.datasource")
+    // public DataSourceProperties firstDataSourceProperties() {
+    //     return new DataSourceProperties();
+    // }
 
     // @Bean(name = "datasource1")
-    // @ConfigurationProperties("spring.datasource2")
-    // public BasicDataSource firstDataSource() {
-    //     return DataSourceBuilder.create().type(BasicDataSource.class).build();
+    // @Primary
+    // @ConfigurationProperties("spring.datasource.configuration")
+    // public HikariDataSource firstDataSource(DataSourceProperties firstDataSourceProperties) {
+    //     return firstDataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
     // }
+
+    @Bean(name = "datasource1")
+    @ConfigurationProperties("spring.datasource")
+    @Primary
+    public BasicDataSource firstDataSource() {
+        return DataSourceBuilder.create().type(BasicDataSource.class).build();
+    }
 
     @Bean(name = "datasource2")
     @ConfigurationProperties("spring.datasource2")
@@ -59,10 +62,17 @@ public class rdsConfig {
     //     return DataSourceBuilder.create().build();
     // }
 
+    // @Bean(name = "tm1")
+    // @Autowired
+    // @Primary
+    // DataSourceTransactionManager tm1(@Qualifier("datasource1") HikariDataSource datasource) {
+    //     DataSourceTransactionManager txm = new DataSourceTransactionManager(datasource);
+    //     return txm;
+    // }
+
     @Bean(name = "tm1")
     @Autowired
-    @Primary
-    DataSourceTransactionManager tm1(@Qualifier("datasource1") HikariDataSource datasource) {
+    DataSourceTransactionManager tm1(@Qualifier("datasource1") BasicDataSource datasource) {
         DataSourceTransactionManager txm = new DataSourceTransactionManager(datasource);
         return txm;
     }
@@ -73,4 +83,15 @@ public class rdsConfig {
         DataSourceTransactionManager txm = new DataSourceTransactionManager(datasource);
         return txm;
     }
+
+    // @Primary
+    // @Bean
+    // public PlatformTransactionManager userTransactionManager() {
+ 
+    //     JpaTransactionManager transactionManager
+    //       = new JpaTransactionManager();
+    //     transactionManager.setEntityManagerFactory(
+    //       userEntityManager().getObject());
+    //     return transactionManager;
+    // }
 }
