@@ -14,14 +14,14 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 @Configuration
 public class rdsConfig {
     @Bean(name = "datasource1")
-    @ConfigurationProperties("database1.datasource")
+    @ConfigurationProperties(prefix="spring.datasource")
     @Primary
     public DataSource dataSource() {
         return DataSourceBuilder.create().build();
     }
 
     @Bean(name = "datasource2")
-    @ConfigurationProperties("database2.datasource")
+    @ConfigurationProperties(prefix="spring.datasource2")
     public DataSource dataSource2() {
         return DataSourceBuilder.create().build();
     }
