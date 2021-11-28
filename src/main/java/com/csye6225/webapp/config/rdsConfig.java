@@ -20,24 +20,24 @@ public class rdsConfig {
         return DataSourceBuilder.create().build();
     }
 
-    @Bean(name = "datasource2")
-    @ConfigurationProperties(prefix="spring.datasource2")
-    public DataSource dataSource2() {
-        return DataSourceBuilder.create().build();
-    }
+    // @Bean(name = "datasource2")
+    // @ConfigurationProperties(prefix="spring.datasource2")
+    // public DataSource dataSource2() {
+    //     return DataSourceBuilder.create().build();
+    // }
 
-    @Bean(name = "tm1")
-    @Autowired
-    @Primary
-    DataSourceTransactionManager tm1(@Qualifier("datasource1") DataSource datasource) {
-        DataSourceTransactionManager txm = new DataSourceTransactionManager(datasource);
-        return txm;
-    }
+    // @Bean(name = "tm1")
+    // @Autowired
+    // @Primary
+    // DataSourceTransactionManager tm1(@Qualifier("datasource1") DataSource datasource) {
+    //     DataSourceTransactionManager txm = new DataSourceTransactionManager(datasource);
+    //     return txm;
+    // }
 
-    @Bean(name = "tm2")
-    @Autowired
-    DataSourceTransactionManager tm2(@Qualifier("datasource2") DataSource datasource) {
-        DataSourceTransactionManager txm = new DataSourceTransactionManager(datasource);
-        return txm;
-    }
+    // @Bean(name = "tm2")
+    // @Autowired
+    // DataSourceTransactionManager tm2(@Qualifier("datasource2") DataSource datasource) {
+    //     DataSourceTransactionManager txm = new DataSourceTransactionManager(datasource);
+    //     return txm;
+    // }
 }
