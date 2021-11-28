@@ -6,6 +6,8 @@ import javassist.NotFoundException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.timgroup.statsd.StatsDClient;
 
 import java.util.Optional;
@@ -32,6 +34,7 @@ public class UserService {
         return user.get();
     }
 
+    @Transactional
     public User saveUser(User user) {
         long startTime = System.currentTimeMillis();
         User foo = userRepository.saveAndFlush(user);
