@@ -34,7 +34,7 @@ public class UserService {
         return user.get();
     }
 
-    @Transactional
+    @Transactional("tm1")
     public User saveUser(User user) {
         long startTime = System.currentTimeMillis();
         User foo = userRepository.saveAndFlush(user);
