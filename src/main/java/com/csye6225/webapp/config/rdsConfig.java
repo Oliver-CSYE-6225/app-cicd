@@ -38,12 +38,12 @@ public class rdsConfig {
         return DataSourceBuilder.create().type(BasicDataSource.class).build();
     }
 
-    // @Bean(name = "datasource2")
-    // @Primary
-    // @ConfigurationProperties("spring.datasource2")
-    // public BasicDataSource secondDataSource() {
-    //     return DataSourceBuilder.create().type(BasicDataSource.class).build();
-    // }
+    @Bean(name = "datasource2")
+    @Primary
+    @ConfigurationProperties("spring.datasource2")
+    public BasicDataSource secondDataSource() {
+        return DataSourceBuilder.create().type(BasicDataSource.class).build();
+    }
 
 
     // @Bean(name = "datasource1")
