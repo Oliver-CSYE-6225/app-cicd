@@ -7,6 +7,8 @@ import com.csye6225.webapp.repository.UserRepository;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.timgroup.statsd.StatsDClient;
 
 import java.util.Optional;
@@ -20,6 +22,7 @@ public class ImageService {
     @Autowired
     StatsDClient statsd;
 
+    @Transactional(readOnly = true)
     public Image getImageMetaData(UUID user_id) throws NotFoundException {
         long startTime = System.currentTimeMillis();
 
@@ -37,6 +40,7 @@ public class ImageService {
         return image.get();
     }
 
+    @Transactional(readOnly = false)
     public Image saveImageMetaData(Image image) {
         long startTime = System.currentTimeMillis();
         Image foo = imageRepository.saveAndFlush(image);
@@ -45,6 +49,7 @@ public class ImageService {
 
     }
 
+    @Transactional(readOnly = false)
     public void deleteImageMetaData(Image image) {
         long startTime = System.currentTimeMillis();
          imageRepository.deleteById(image.getId());
