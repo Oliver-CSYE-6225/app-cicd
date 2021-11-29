@@ -54,7 +54,7 @@ public class rdsConfig {
 
     @Bean(name = "writeDataSource")
     @ConfigurationProperties(prefix="spring.datasource")
-    @Primary
+    // @Primary
     public DataSource primaryDataSource() {
         return DataSourceBuilder.create().build();
     }
