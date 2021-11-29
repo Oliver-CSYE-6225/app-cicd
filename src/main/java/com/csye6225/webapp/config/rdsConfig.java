@@ -83,6 +83,8 @@ public class rdsConfig {
     transactionManager.setEntityManagerFactory(emf);
 
     return transactionManager;
+
+    }
     // @Primary
     // @Bean
     // public PlatformTransactionManager userTransactionManager() {
