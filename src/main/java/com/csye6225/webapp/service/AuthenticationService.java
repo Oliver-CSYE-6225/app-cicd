@@ -1,6 +1,7 @@
 package com.csye6225.webapp.service;
 
 import com.csye6225.webapp.entity.User;
+import com.csye6225.webapp.repository.ReadUserRepository;
 import com.csye6225.webapp.repository.UserRepository;
 import javassist.NotFoundException;
 
@@ -19,13 +20,13 @@ import java.util.Optional;
 public class AuthenticationService {
 
     @Autowired
-    UserRepository userRepository;
+    ReadUserRepository readUserRepository;
 
     private static final Logger LOGGER=LoggerFactory.getLogger(AuthenticationService.class);
 
     public boolean authenticateUser(String[] tokens) {
                 BCryptPasswordEncoder b = new BCryptPasswordEncoder(12);
-                String storedPassword = userRepository.findUserPassword(tokens[0]);
+                String storedPassword = readUserRepository.findUserPassword(tokens[0]);
                 LOGGER.info("stored password for user: " + storedPassword);
                 if(storedPassword != null && b.matches(tokens[1], storedPassword)) {
                     return true;

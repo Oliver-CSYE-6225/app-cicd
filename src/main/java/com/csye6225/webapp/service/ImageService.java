@@ -22,7 +22,7 @@ public class ImageService {
     @Autowired
     StatsDClient statsd;
 
-    @Transactional("tm2")
+    // @Transactional("tm2")
     public Image getImageMetaData(UUID user_id) throws NotFoundException {
         long startTime = System.currentTimeMillis();
 
@@ -40,7 +40,7 @@ public class ImageService {
         return image.get();
     }
 
-    @Transactional("tm1")
+    // @Transactional("tm1")
     public Image saveImageMetaData(Image image) {
         long startTime = System.currentTimeMillis();
         Image foo = imageRepository.saveAndFlush(image);
@@ -49,7 +49,7 @@ public class ImageService {
 
     }
 
-    @Transactional("tm1")
+    // @Transactional("tm1")
     public void deleteImageMetaData(Image image) {
         long startTime = System.currentTimeMillis();
          imageRepository.deleteById(image.getId());
