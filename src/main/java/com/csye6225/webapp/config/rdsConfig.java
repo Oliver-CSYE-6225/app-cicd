@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
+import com.csye6225.webapp.entity.User;
 import com.zaxxer.hikari.HikariDataSource;
 
 import org.apache.commons.dbcp.BasicDataSource;
@@ -25,30 +26,30 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Configuration
 public class rdsConfig {
 
-    // @Bean
-    // @Primary
-    // @ConfigurationProperties("spring.datasource")
-    // public DataSourceProperties firstDataSourceProperties() {
-    //     return new DataSourceProperties();
-    // }
-
-    // @Bean(name = "datasource1")
-    // @Primary
-    // @ConfigurationProperties("spring.datasource.configuration")
-    // public HikariDataSource firstDataSource(DataSourceProperties firstDataSourceProperties) {
-    //     return firstDataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
-    // }
+    @Bean
+    @Primary
+    @ConfigurationProperties("spring.datasource")
+    public DataSourceProperties firstDataSourceProperties() {
+        return new DataSourceProperties();
+    }
 
     @Bean(name = "datasource1")
-    @ConfigurationProperties("spring.datasource1")
-    public DataSource firstDataSource() {
-        return DataSourceBuilder.create().build();
+    @Primary
+    @ConfigurationProperties("spring.datasource.configuration")
+    public HikariDataSource firstDataSource(DataSourceProperties firstDataSourceProperties) {
+        return firstDataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
     }
+
+    // @Bean(name = "datasource1")
+    // @ConfigurationProperties("spring.datasource1")
+    // public DataSource firstDataSource() {
+    //     return DataSourceBuilder.create().build();
+    // }
 
     @Bean(name = "datasource2")
     @ConfigurationProperties("spring.datasource2")
-    public DataSource secondDataSource() {
-        return DataSourceBuilder.create().build();
+    public BasicDataSource secondDataSource() {
+        return DataSourceBuilder.create().type(BasicDataSource.class).build();
     }
 
 
@@ -85,7 +86,7 @@ public class rdsConfig {
     //     JpaTransactionManager transactionManager
     //       = new JpaTransactionManager();
     //     transactionManager.setEntityManagerFactory(
-    //       userEntityManager().getObject());
+    //       new User());
     //     return transactionManager;
     // }
 }
