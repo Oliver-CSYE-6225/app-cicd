@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @Repository
 public interface ImageRepository extends JpaRepository<Image, UUID> {
-    @Transactional(readOnly = true)
+    // @Transactional("tm2")
     @Query("SELECT i FROM Image i WHERE i.user_id = ?1")
     Optional<Image> findByUserId(UUID user_id);
 

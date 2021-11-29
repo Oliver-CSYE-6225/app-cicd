@@ -39,66 +39,36 @@ public class rdsConfig {
     //     return firstDataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
     // }
 
-    // @Bean(name = "datasource1")
-    // @ConfigurationProperties("spring.datasource2")
-    // public BasicDataSource firstDataSource() {
-    //     return DataSourceBuilder.create().type(BasicDataSource.class).build();
-    // }
-
-    // @Bean(name = "datasource2")
-    // @ConfigurationProperties("spring.datasource2")
-    // public BasicDataSource secondDataSource() {
-    //     return DataSourceBuilder.create().type(BasicDataSource.class).build();
-    // }
-
-
-    @Bean(name = "writeDataSource")
-    @ConfigurationProperties(prefix="spring.datasource")
-    // @Primary
-    public DataSource primaryDataSource() {
-        return DataSourceBuilder.create().build();
-    }
-    
-
-    @Bean(name = "readDataSource")
-    @ConfigurationProperties(prefix="spring.datasource2")
-    public DataSource secondaryDataSource() {
+    @Bean(name = "datasource1")
+    @ConfigurationProperties("spring.datasource1")
+    public DataSource firstDataSource() {
         return DataSourceBuilder.create().build();
     }
 
-    @Bean
-    public DataSource routingDataSource(
-        @Qualifier("writeDataSource") DataSource writeDataSource,
-        @Qualifier("readDataSource") DataSource readDataSource) {
-        ReplicationRoutingDataSource routingDataSource = new ReplicationRoutingDataSource();
-    
-        Map<Object, Object> dataSourceMap = new HashMap<Object, Object>();
-        dataSourceMap.put("write", writeDataSource);
-        dataSourceMap.put("read", readDataSource);
-        routingDataSource.setTargetDataSources(dataSourceMap);
-        routingDataSource.setDefaultTargetDataSource(writeDataSource);
-    
-        return routingDataSource;
+    @Bean(name = "datasource2")
+    @ConfigurationProperties("spring.datasource2")
+    public DataSource secondDataSource() {
+        return DataSourceBuilder.create().build();
     }
-    
-    @Bean
-    public DataSource dataSource(@Qualifier("routingDataSource") DataSource routingDataSource) {
-        return new LazyConnectionDataSourceProxy(routingDataSource);
-    }
-    // @Bean(name = "tm1")
-    // @Autowired
-    // @Primary
-    // DataSourceTransactionManager tm1(@Qualifier("datasource1") HikariDataSource datasource) {
-    //     DataSourceTransactionManager txm = new DataSourceTransactionManager(datasource);
-    //     return txm;
-    // }
 
-    // @Bean(name = "tm2")
-    // @Autowired
-    // DataSourceTransactionManager tm2(@Qualifier("datasource2") BasicDataSource datasource) {
-    //     DataSourceTransactionManager txm = new DataSourceTransactionManager(datasource);
-    //     return txm;
-    // }
+
+
+    
+    
+    @Bean(name = "tm1")
+    @Autowired
+    @Primary
+    DataSourceTransactionManager tm1(@Qualifier("datasource1") HikariDataSource datasource) {
+        DataSourceTransactionManager txm = new DataSourceTransactionManager(datasource);
+        return txm;
+    }
+
+    @Bean(name = "tm2")
+    @Autowired
+    DataSourceTransactionManager tm2(@Qualifier("datasource2") BasicDataSource datasource) {
+        DataSourceTransactionManager txm = new DataSourceTransactionManager(datasource);
+        return txm;
+    }
 
     // @Bean
     // public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
