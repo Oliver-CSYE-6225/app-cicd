@@ -26,19 +26,19 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Configuration
 public class rdsConfig {
 
-    @Bean
-    @Primary
-    @ConfigurationProperties("spring.datasource")
-    public DataSourceProperties firstDataSourceProperties() {
-        return new DataSourceProperties();
-    }
+    // @Bean
+    // @Primary
+    // @ConfigurationProperties("spring.datasource")
+    // public DataSourceProperties firstDataSourceProperties() {
+    //     return new DataSourceProperties();
+    // }
 
-    @Bean(name = "datasource1")
-    @Primary
-    @ConfigurationProperties("spring.datasource.configuration")
-    public HikariDataSource firstDataSource(DataSourceProperties firstDataSourceProperties) {
-        return firstDataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
-    }
+    // @Bean(name = "datasource1")
+    // @Primary
+    // @ConfigurationProperties("spring.datasource.configuration")
+    // public HikariDataSource firstDataSource(DataSourceProperties firstDataSourceProperties) {
+    //     return firstDataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
+    // }
 
     // @Bean(name = "datasource1")
     // @ConfigurationProperties("spring.datasource1")
@@ -46,30 +46,30 @@ public class rdsConfig {
     //     return DataSourceBuilder.create().build();
     // }
 
-    @Bean(name = "datasource2")
-    @ConfigurationProperties("spring.datasource2")
-    public BasicDataSource secondDataSource() {
-        return DataSourceBuilder.create().type(BasicDataSource.class).build();
-    }
+    // @Bean(name = "datasource2")
+    // @ConfigurationProperties("spring.datasource2")
+    // public BasicDataSource secondDataSource() {
+    //     return DataSourceBuilder.create().type(BasicDataSource.class).build();
+    // }
 
 
 
     
     
-    @Bean(name = "tm1")
-    @Autowired
-    @Primary
-    DataSourceTransactionManager tm1(@Qualifier("datasource1") HikariDataSource datasource) {
-        DataSourceTransactionManager txm = new DataSourceTransactionManager(datasource);
-        return txm;
-    }
+    // @Bean(name = "tm1")
+    // @Autowired
+    // @Primary
+    // DataSourceTransactionManager tm1(@Qualifier("datasource1") HikariDataSource datasource) {
+    //     DataSourceTransactionManager txm = new DataSourceTransactionManager(datasource);
+    //     return txm;
+    // }
 
-    @Bean(name = "tm2")
-    @Autowired
-    DataSourceTransactionManager tm2(@Qualifier("datasource2") BasicDataSource datasource) {
-        DataSourceTransactionManager txm = new DataSourceTransactionManager(datasource);
-        return txm;
-    }
+    // @Bean(name = "tm2")
+    // @Autowired
+    // DataSourceTransactionManager tm2(@Qualifier("datasource2") BasicDataSource datasource) {
+    //     DataSourceTransactionManager txm = new DataSourceTransactionManager(datasource);
+    //     return txm;
+    // }
 
     // @Bean
     // public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {

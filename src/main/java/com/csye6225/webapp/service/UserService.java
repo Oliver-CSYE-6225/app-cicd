@@ -1,6 +1,7 @@
 package com.csye6225.webapp.service;
 
 import com.csye6225.webapp.entity.User;
+import com.csye6225.webapp.repository.ReadUserRepository;
 import com.csye6225.webapp.repository.UserRepository;
 import javassist.NotFoundException;
 import org.json.JSONObject;
@@ -18,12 +19,15 @@ public class UserService {
     UserRepository userRepository;
 
     @Autowired
+    ReadUserRepository readUserRepository;
+
+    @Autowired
     StatsDClient statsd;
 
-    @Transactional("tm2")
+    // @Transactional("tm2")
     public User getUser(String userName) {
         long startTime = System.currentTimeMillis();
-        Optional<User> user = userRepository.findByUserName(userName);
+        Optional<User> user = readUserRepository.findByUserName(userName);
         statsd.recordExecutionTime("Fetch User  Execution Time", startTime -  System.currentTimeMillis());
 
         try{
@@ -35,7 +39,7 @@ public class UserService {
         return user.get();
     }
 
-    @Transactional("tm1")
+    // @Transactional("tm1")
     public User saveUser(User user) {
         long startTime = System.currentTimeMillis();
         User foo = userRepository.saveAndFlush(user);
