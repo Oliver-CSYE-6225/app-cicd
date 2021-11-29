@@ -16,11 +16,11 @@ import java.util.UUID;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    @Transactional("tm2")
+    @Transactional(readOnly = true)
     @Query("SELECT u FROM User u WHERE u.username = ?1")
     Optional<User> findByUserName(String user_name);
 
-    @Transactional("tm2")
+    @Transactional(readOnly = true)
     @Query("SELECT password FROM User  WHERE username = ?1")
     String findUserPassword(String user_name);
 
