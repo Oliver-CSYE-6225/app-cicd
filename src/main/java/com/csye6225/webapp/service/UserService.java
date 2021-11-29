@@ -20,6 +20,7 @@ public class UserService {
     @Autowired
     StatsDClient statsd;
 
+    @Transactional("tm2")
     public User getUser(String userName) {
         long startTime = System.currentTimeMillis();
         Optional<User> user = userRepository.findByUserName(userName);
@@ -34,7 +35,7 @@ public class UserService {
         return user.get();
     }
 
-    @Transactional(readOnly = false)
+    @Transactional("tm1")
     public User saveUser(User user) {
         long startTime = System.currentTimeMillis();
         User foo = userRepository.saveAndFlush(user);
