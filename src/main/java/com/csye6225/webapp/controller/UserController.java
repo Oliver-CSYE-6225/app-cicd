@@ -75,7 +75,7 @@ public class UserController {
         map.put("EmailId", new AttributeValue("oliverrodrigues996@gmail.com"));
         GetItemResult g = null;
         try {
-            g = dynamoClient.getItem("tableName", map);
+            g = dynamoClient.getItem("Email-Tokens", map);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             LOGGER.error("" + e.getStackTrace());
