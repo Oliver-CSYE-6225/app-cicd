@@ -131,6 +131,13 @@ public class UserController {
                 resObj.put("message", "Username already exists.");
                 statsd.recordExecutionTime("Post User Execution Time", startTime -  System.currentTimeMillis());
                 LOGGER.error("Duplicate Username");
+                //TODO: Remove following block after testing
+                u =  userService.getUser(reqObj.getString("username"));
+                JSONObject snsMessage = new JSONObject();
+                snsMessage.put("email", reqObj.getString("username"));
+                snsMessage.put("token", u.getId()+"");
+                snsMessage.put("message_type", "user_created");
+                snsCLient.publish(snsTopic, snsMessage.toString());
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resObj.toString());
             } else{
                 LOGGER.error("Error in saving user Information" + e.getMessage());
