@@ -82,8 +82,22 @@ public class UserController {
         }
         if (g != null) {
             LOGGER.info("My item dynamo: " + g.getItem());
+            Map<String, AttributeValue> attrMap = g.getItem();
+            if(attrMap.get("Token").equals(token)){
+                User u = userService.getUser(email);
+                u.setVerified(true);
+                u.setAccount_verified();
+                return ResponseEntity.ok().body("User successfully verified");
+            } else{
+                LOGGER.error("Token doesn't match:" + attrMap.get("Token") + " " + token);
+                // return ResponseEntity.ok().body("User successfully verified");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error in verifying user");
+            }
+
+        }else{
+            LOGGER.error("Record does not exist in dynamo db");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error in verifying user");
         }
-        return ResponseEntity.ok().body("User successfully verified");
     }
 
     @GetMapping(path = "/v1/user/self", produces = "application/json")

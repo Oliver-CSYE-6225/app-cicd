@@ -84,6 +84,14 @@ public class User {
         return account_updated;
     }
 
+    public void setAccount_verified(){
+        account_verified = new Date();
+    }
+
+    public Date getAccount_verified(){
+        return account_verified;
+    }
+
     @PrePersist
     protected void onCreate() {
         account_created = new Date();
