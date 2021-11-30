@@ -1,5 +1,8 @@
 package com.csye6225.webapp.controller;
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.GetItemResult;
 import com.amazonaws.services.sns.AmazonSNSClient;
 import com.csye6225.webapp.entity.User;
 import com.csye6225.webapp.repository.UserRepository;
@@ -20,6 +23,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -44,6 +50,9 @@ public class UserController {
     private AmazonSNSClient snsCLient;
 
     @Autowired
+    private AmazonDynamoDB dynamoClient;
+
+    @Autowired
     StatsDClient statsd;
     // private static final StatsDClient statsd = new NonBlockingStatsDClient("my.prefix", "localhost", 8125);
 
@@ -61,8 +70,17 @@ public class UserController {
 
     @GetMapping(path = "/v1/verifyUserEmail", produces = "application/json")
     public ResponseEntity<String> verifyUserEmail(@RequestHeader HttpHeaders headers, @RequestParam("email") String email, @RequestParam("token") String token) {
-        
-        return ResponseEntity.ok().body("");
+        Map<String, AttributeValue> map = new HashMap<>();
+        map.put("EmailId", new AttributeValue("oliverrodrigues996@gmail.com"));
+        GetItemResult g = null;
+        try{
+            g = dynamoClient.getItem("tableName", map);
+        } catch(Exception e){
+            LOGGER.error(e.getMessage());
+            LOGGER.error("" + e.getStackTrace());
+        }
+        LOGGER.info("My item dynamo: " + g.getItem());
+        return ResponseEntity.ok().body("User successfully verified");
     }
 
     @GetMapping(path = "/v1/user/self", produces = "application/json")
