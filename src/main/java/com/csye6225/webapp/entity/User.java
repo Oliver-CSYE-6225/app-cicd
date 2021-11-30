@@ -21,9 +21,17 @@ public class User {
     private Date account_created;
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private Date account_updated;
-
+    private boolean verified;
 
     public User() {
+    }
+
+    public boolean getVerified(){
+        return verified;
+    }
+
+    public void setVerified(boolean verified){
+        this.verified = verified;
     }
 
     public UUID getId() {
