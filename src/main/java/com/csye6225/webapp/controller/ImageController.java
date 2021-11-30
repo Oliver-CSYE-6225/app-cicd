@@ -1,16 +1,13 @@
 package com.csye6225.webapp.controller;
 
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectResult;
+
 import com.amazonaws.util.IOUtils;
 import com.csye6225.webapp.entity.Image;
 import com.csye6225.webapp.entity.User;
-import com.csye6225.webapp.repository.ImageRepository;
 import com.csye6225.webapp.service.*;
 import javassist.NotFoundException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.timgroup.statsd.StatsDClient;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.UUID;

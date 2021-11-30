@@ -1,11 +1,8 @@
 package com.csye6225.webapp.config;
 
-import com.amazonaws.auth.*;
-import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.BucketReplicationConfiguration;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
