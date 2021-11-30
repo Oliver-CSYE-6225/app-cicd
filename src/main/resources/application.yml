@@ -14,3 +14,5 @@ logging:
 application:
   bucket:
     name: ${s3_bucket_name}
+  sns:
+    arn: ${sns_topic_arn}

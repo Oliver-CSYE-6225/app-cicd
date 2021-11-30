@@ -1,5 +1,6 @@
 package com.csye6225.webapp.controller;
 
+import com.amazonaws.services.sns.AmazonSNS;
 import com.csye6225.webapp.entity.User;
 import com.csye6225.webapp.repository.UserRepository;
 import com.csye6225.webapp.service.AuthenticationService;
@@ -14,6 +15,7 @@ import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -49,8 +51,14 @@ public class UserController {
     CommonUtilsService commonUtilsService;
 
     @Autowired
+    private AmazonSNS snsCLient;
+
+    @Autowired
     StatsDClient statsd;
     // private static final StatsDClient statsd = new NonBlockingStatsDClient("my.prefix", "localhost", 8125);
+
+    @Value("${application.sns.arn}")
+    private String snsTopic;
 
     private static final Logger LOGGER=LoggerFactory.getLogger(UserController.class);
 
@@ -97,7 +105,8 @@ public class UserController {
 
     @PostMapping(path = "/v1/user", produces = "application/json")
     public ResponseEntity<String> postUser(@RequestHeader HttpHeaders headers, @RequestBody String reqBody) {
-        LOGGER.info("Post User Called");
+        LOGGER.info("Post User Called"); 
+        snsCLient.publish(snsTopic, "Message from the webapp: create user called");
         long startTime = System.currentTimeMillis();
         JSONObject reqObj = new JSONObject(reqBody);
         String errorString = validationService.validateSaveObject(reqObj);
@@ -117,6 +126,7 @@ public class UserController {
         u.setFirst_name(first_name);
         u.setLast_name(last_name);
         u.setUsername(user_name);
+        u.setVerified(false);
 
         try{
             userService.saveUser(u);

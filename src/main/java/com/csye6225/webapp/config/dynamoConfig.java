@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 public class dynamoConfig {
     @Bean
     public static AmazonDynamoDBClient dynamoClient() {
+
         AmazonDynamoDBClient client = new AmazonDynamoDBClient(new DefaultAWSCredentialsProviderChain());
         // client.getItem("tableName", key)
         return client;
