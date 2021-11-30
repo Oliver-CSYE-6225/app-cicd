@@ -4,8 +4,11 @@ import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.services.sns.AmazonSNSClient;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
+@Configuration
 public class snsConfig {
+    
     @Bean
     public static AmazonSNSClient snsClient() {
 
