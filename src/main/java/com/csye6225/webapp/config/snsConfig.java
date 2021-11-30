@@ -8,10 +8,11 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class snsConfig {
-    
+
     @Bean
     public static AmazonSNSClient snsClient() {
 
+        
         AmazonSNSClient client = new AmazonSNSClient(new DefaultAWSCredentialsProviderChain());
         // client.getItem("tableName", key)
         // client.publish(topicArn, message)
