@@ -41,7 +41,9 @@ public class dynamoConfig {
             LOGGER.error(e.getMessage());
             LOGGER.error("" + e.getStackTrace());
         }
-        LOGGER.info("My item dynamo: " + g.getItem());
+        if(g != null){
+            LOGGER.info("My item dynamo: " + g.getItem());
+        }
         return client;
     }
 }

@@ -54,32 +54,35 @@ public class UserController {
 
     @Autowired
     StatsDClient statsd;
-    // private static final StatsDClient statsd = new NonBlockingStatsDClient("my.prefix", "localhost", 8125);
+    // private static final StatsDClient statsd = new
+    // NonBlockingStatsDClient("my.prefix", "localhost", 8125);
 
     @Value("${application.sns.arn}")
     private String snsTopic;
 
-    private static final Logger LOGGER=LoggerFactory.getLogger(UserController.class);
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping(path = "/", produces = "application/json")
     public ResponseEntity<String> rootURl(@RequestHeader HttpHeaders headers) {
-        
+
         return ResponseEntity.ok().body("");
     }
 
     @GetMapping(path = "/v1/verifyUserEmail", produces = "application/json")
-    public ResponseEntity<String> verifyUserEmail(@RequestHeader HttpHeaders headers, @RequestParam("email") String email, @RequestParam("token") String token) {
+    public ResponseEntity<String> verifyUserEmail(@RequestHeader HttpHeaders headers,
+            @RequestParam("email") String email, @RequestParam("token") String token) {
         Map<String, AttributeValue> map = new HashMap<>();
         map.put("EmailId", new AttributeValue("oliverrodrigues996@gmail.com"));
         GetItemResult g = null;
-        try{
+        try {
             g = dynamoClient.getItem("tableName", map);
-        } catch(Exception e){
+        } catch (Exception e) {
             LOGGER.error(e.getMessage());
             LOGGER.error("" + e.getStackTrace());
         }
-        LOGGER.info("My item dynamo: " + g.getItem());
+        if (g != null) {
+            LOGGER.info("My item dynamo: " + g.getItem());
+        }
         return ResponseEntity.ok().body("User successfully verified");
     }
 
@@ -91,39 +94,41 @@ public class UserController {
         // statsd.recordSetEvent("qux", "one");
         LOGGER.info("Get User Called");
         LOGGER.info("This is information");
-		LOGGER.debug("This is debug");
+        LOGGER.debug("This is debug");
         String authorization = headers.getFirst("Authorization");
         String decodedTokenString = authenticationService.decodeBasicAuthToken(authorization);
         String[] tokens = new String[2];
-        if(decodedTokenString != null){
-            if(decodedTokenString.split(":").length == 2) {
+        if (decodedTokenString != null) {
+            if (decodedTokenString.split(":").length == 2) {
                 tokens = decodedTokenString.split(":", 2);
             }
-            if(!authenticationService.authenticateUser(tokens)){
-                statsd.recordExecutionTime("GetUser Execution Time", startTime -  System.currentTimeMillis());
+            if (!authenticationService.authenticateUser(tokens)) {
+                statsd.recordExecutionTime("GetUser Execution Time", startTime - System.currentTimeMillis());
                 LOGGER.error("Unauthorized User");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(new JSONObject().put("message","Authorization Refused for the credentials provided.").toString());
+                        .body(new JSONObject().put("message", "Authorization Refused for the credentials provided.")
+                                .toString());
             }
-        } else{
-            statsd.recordExecutionTime("GetUser Execution Time", startTime -  System.currentTimeMillis());
+        } else {
+            statsd.recordExecutionTime("GetUser Execution Time", startTime - System.currentTimeMillis());
             LOGGER.error("Unauthorized User");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new JSONObject().put("message","Authorization Refused for the credentials provided.").toString());
+                    .body(new JSONObject().put("message", "Authorization Refused for the credentials provided.")
+                            .toString());
         }
-        User userObj =  userService.getUser(tokens[0]);
+        User userObj = userService.getUser(tokens[0]);
 
-        statsd.recordExecutionTime("GetUser Execution Time", startTime -  System.currentTimeMillis());
+        statsd.recordExecutionTime("GetUser Execution Time", startTime - System.currentTimeMillis());
         return ResponseEntity.ok().body(commonUtilsService.getUserAsJSON(userObj).toString());
     }
 
     @PostMapping(path = "/v1/user", produces = "application/json")
     public ResponseEntity<String> postUser(@RequestHeader HttpHeaders headers, @RequestBody String reqBody) {
-        LOGGER.info("Post User Called"); 
+        LOGGER.info("Post User Called");
         long startTime = System.currentTimeMillis();
         JSONObject reqObj = new JSONObject(reqBody);
         String errorString = validationService.validateSaveObject(reqObj);
-        if(!errorString.equals("")) {
+        if (!errorString.equals("")) {
             JSONObject respObj = new JSONObject();
             respObj.put("message", errorString);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(respObj.toString());
@@ -141,41 +146,40 @@ public class UserController {
         u.setUsername(user_name);
         u.setVerified(false);
 
-        try{
+        try {
             userService.saveUser(u);
-        } catch(Exception e) {
+        } catch (Exception e) {
             JSONObject resObj = new JSONObject();
-            if(e.getMessage().contains("constraint [usertable_username_key]")){
+            if (e.getMessage().contains("constraint [usertable_username_key]")) {
                 resObj.put("message", "Username already exists.");
-                statsd.recordExecutionTime("Post User Execution Time", startTime -  System.currentTimeMillis());
+                statsd.recordExecutionTime("Post User Execution Time", startTime - System.currentTimeMillis());
                 LOGGER.error("Duplicate Username");
-                //TODO: Remove following block after testing
-                u =  userService.getUser(reqObj.getString("username"));
+                // TODO: Remove following block after testing
+                u = userService.getUser(reqObj.getString("username"));
                 JSONObject snsMessage = new JSONObject();
                 snsMessage.put("email", reqObj.getString("username"));
-                snsMessage.put("token", u.getId()+"");
+                snsMessage.put("token", u.getId() + "");
                 snsMessage.put("message_type", "user_created");
                 snsCLient.publish(snsTopic, snsMessage.toString());
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resObj.toString());
-            } else{
+            } else {
                 LOGGER.error("Error in saving user Information" + e.getMessage());
                 resObj.put("message", "Unable to Save User Information. Please try again.");
-                statsd.recordExecutionTime("Post User Execution Time", startTime -  System.currentTimeMillis());
+                statsd.recordExecutionTime("Post User Execution Time", startTime - System.currentTimeMillis());
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resObj.toString());
             }
         }
 
-        u =  userService.getUser(reqObj.getString("username"));
+        u = userService.getUser(reqObj.getString("username"));
         JSONObject snsMessage = new JSONObject();
         snsMessage.put("email", reqObj.getString("username"));
-        snsMessage.put("token", u.getId()+"");
+        snsMessage.put("token", u.getId() + "");
         snsMessage.put("message_type", "user_created");
         snsCLient.publish(snsTopic, snsMessage.toString());
 
-        statsd.recordExecutionTime("Post User Execution Time", startTime -  System.currentTimeMillis());
+        statsd.recordExecutionTime("Post User Execution Time", startTime - System.currentTimeMillis());
         return ResponseEntity.status(HttpStatus.CREATED).body(commonUtilsService.getUserAsJSON(u).toString());
     }
-
 
     @PutMapping(path = "/v1/user/self", produces = "application/json")
     public ResponseEntity<String> putUser(@RequestHeader HttpHeaders headers, @RequestBody String reqBody) {
@@ -185,46 +189,47 @@ public class UserController {
         String decodedTokenString = authenticationService.decodeBasicAuthToken(authorization);
         String[] tokens = new String[2];
 
-        if(decodedTokenString != null){
-            if(decodedTokenString.split(":").length == 2) {
+        if (decodedTokenString != null) {
+            if (decodedTokenString.split(":").length == 2) {
                 tokens = decodedTokenString.split(":", 2);
             }
-            if(!authenticationService.authenticateUser(tokens)){
+            if (!authenticationService.authenticateUser(tokens)) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(new JSONObject().put("message","Authorization Refused for the credentials provided.").toString());
+                        .body(new JSONObject().put("message", "Authorization Refused for the credentials provided.")
+                                .toString());
             }
-        } else{
+        } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new JSONObject().put("message","Authorization Refused for the credentials provided.").toString());
+                    .body(new JSONObject().put("message", "Authorization Refused for the credentials provided.")
+                            .toString());
         }
 
         JSONObject updateObj = new JSONObject(reqBody);
-        //Validate update object to check for unwanted fields and data type
+        // Validate update object to check for unwanted fields and data type
         String errorString = validationService.validateModifyObject(updateObj);
-        if(!errorString.equals("")){
+        if (!errorString.equals("")) {
             JSONObject respObj = new JSONObject();
             respObj.put("message", errorString);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(respObj.toString());
         }
 
-        if(!tokens[0].equals(updateObj.getString("username"))){
+        if (!tokens[0].equals(updateObj.getString("username"))) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new JSONObject().put("message",
-                           "Incorrect Authorization credentials for " +
-                                   updateObj.getString("username")).toString());
+                            "Incorrect Authorization credentials for " +
+                                    updateObj.getString("username"))
+                            .toString());
         }
 
-
-
         User u = userService.getUser(updateObj.getString("username"));
-        try{
-            if(updateObj.has("first_name")){
+        try {
+            if (updateObj.has("first_name")) {
                 u.setFirst_name(updateObj.getString("first_name"));
             }
-            if(updateObj.has("last_name")){
+            if (updateObj.has("last_name")) {
                 u.setLast_name(updateObj.getString("last_name"));
             }
-            if(updateObj.has("password")){
+            if (updateObj.has("password")) {
                 String password = updateObj.getString("password");
                 BCryptPasswordEncoder b = new BCryptPasswordEncoder(12);
                 updateObj.put("password", b.encode(password));
@@ -232,17 +237,17 @@ public class UserController {
             }
             User savedUser = userService.saveUser(u);
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             JSONObject resObj = new JSONObject();
             resObj.put("statusCode", HttpStatus.INTERNAL_SERVER_ERROR);
             resObj.put("message", "Unable to Update User Information. Please try again.");
-            statsd.recordExecutionTime("Update User Execution Time", startTime -  System.currentTimeMillis());
+            statsd.recordExecutionTime("Update User Execution Time", startTime - System.currentTimeMillis());
             LOGGER.error("Unable to update user information");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resObj.toString());
         }
 
-        statsd.recordExecutionTime("Update User Execution Time", startTime -  System.currentTimeMillis());
+        statsd.recordExecutionTime("Update User Execution Time", startTime - System.currentTimeMillis());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(updateObj.toString());
     }
 
