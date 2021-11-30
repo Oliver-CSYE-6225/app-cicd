@@ -21,6 +21,8 @@ public class User {
     private Date account_created;
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private Date account_updated;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+    private Date account_verified;
     private boolean verified;
 
     public User() {
@@ -86,6 +88,7 @@ public class User {
     protected void onCreate() {
         account_created = new Date();
         account_updated = account_created;
+        account_verified = null;
     }
 
     @Override
