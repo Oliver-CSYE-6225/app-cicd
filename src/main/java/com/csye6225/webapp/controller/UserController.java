@@ -59,6 +59,12 @@ public class UserController {
         return ResponseEntity.ok().body("");
     }
 
+    @GetMapping(path = "/v1/verifyUserEmail", produces = "application/json")
+    public ResponseEntity<String> verifyUserEmail(@RequestHeader HttpHeaders headers, @RequestParam("email") String email, @RequestParam("token") String token) {
+        
+        return ResponseEntity.ok().body("");
+    }
+
     @GetMapping(path = "/v1/user/self", produces = "application/json")
     public ResponseEntity<String> getUser(@RequestHeader HttpHeaders headers) {
         long startTime = System.currentTimeMillis();
@@ -96,7 +102,6 @@ public class UserController {
     @PostMapping(path = "/v1/user", produces = "application/json")
     public ResponseEntity<String> postUser(@RequestHeader HttpHeaders headers, @RequestBody String reqBody) {
         LOGGER.info("Post User Called"); 
-        snsCLient.publish(snsTopic, "Message from the webapp: create user called");
         long startTime = System.currentTimeMillis();
         JSONObject reqObj = new JSONObject(reqBody);
         String errorString = validationService.validateSaveObject(reqObj);
@@ -136,6 +141,12 @@ public class UserController {
         }
 
         u =  userService.getUser(reqObj.getString("username"));
+        JSONObject snsMessage = new JSONObject();
+        snsMessage.put("email", reqObj.getString("username"));
+        snsMessage.put("token", u.getId()+"");
+        snsMessage.put("message_type", "user_created");
+        snsCLient.publish(snsTopic, snsMessage.toString());
+
         statsd.recordExecutionTime("Post User Execution Time", startTime -  System.currentTimeMillis());
         return ResponseEntity.status(HttpStatus.CREATED).body(commonUtilsService.getUserAsJSON(u).toString());
     }

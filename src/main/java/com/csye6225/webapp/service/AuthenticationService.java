@@ -26,9 +26,20 @@ public class AuthenticationService {
 
     public boolean authenticateUser(String[] tokens) {
                 BCryptPasswordEncoder b = new BCryptPasswordEncoder(12);
-                String storedPassword = readUserRepository.findUserPassword(tokens[0]);
+                Optional<User> user = readUserRepository.findByUserName(tokens[0]);
+        
+                try{
+                    user.orElseThrow(() -> new NotFoundException("Not found: " + tokens[0]));
+                }catch(Exception e){
+                    System.out.println("User" +  user);
+                } 
+                User u = user.get();               
+                // String storedPassword = readUserRepository.findUserPassword(tokens[0]);
+                String storedPassword = u.getPassword();
+                boolean isVerified = u.getVerified();
+
                 LOGGER.info("stored password for user: " + storedPassword);
-                if(storedPassword != null && b.matches(tokens[1], storedPassword)) {
+                if(isVerified && storedPassword != null && b.matches(tokens[1], storedPassword)) {
                     return true;
                 }
                 return false;

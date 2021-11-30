@@ -21,7 +21,7 @@ public interface ReadUserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUserName(String user_name);
 
     // @Transactional("tm2")
-    @Query("SELECT password FROM User  WHERE username = ?1")
+    @Query("SELECT password,verified FROM User  WHERE username = ?1")
     String findUserPassword(String user_name);
 
 }
