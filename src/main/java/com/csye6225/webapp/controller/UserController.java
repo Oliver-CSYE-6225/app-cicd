@@ -80,7 +80,7 @@ public class UserController {
             LOGGER.error("" + e.getStackTrace());
         }
         LOGGER.info("My item dynamo: " + g.getItem());
-        return ResponseEntity.ok().body("");
+        return ResponseEntity.ok().body("User successfully verified");
     }
 
     @GetMapping(path = "/v1/user/self", produces = "application/json")
