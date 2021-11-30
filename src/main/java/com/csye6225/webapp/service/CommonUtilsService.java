@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Service
 public class CommonUtilsService {
@@ -20,6 +21,12 @@ public class CommonUtilsService {
         System.out.println("hello create" + u.getAccount_created());
         obj.put("account_created", s.format(u.getAccount_created()));
         obj.put("account_updated", s.format(u.getAccount_updated()));
+        Date verified_on = u.getAccount_verified();
+        if(verified_on != null){
+            obj.put("verified_on", s.format(verified_on));
+        } else{
+            obj.put("verified_on", "null");
+        }
         return obj;
     }
 
