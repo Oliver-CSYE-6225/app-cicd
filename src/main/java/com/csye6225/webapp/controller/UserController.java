@@ -1,14 +1,13 @@
 package com.csye6225.webapp.controller;
 
-import com.amazonaws.services.sns.AmazonSNS;
+import com.amazonaws.services.sns.AmazonSNSClient;
 import com.csye6225.webapp.entity.User;
 import com.csye6225.webapp.repository.UserRepository;
 import com.csye6225.webapp.service.AuthenticationService;
 import com.csye6225.webapp.service.CommonUtilsService;
 import com.csye6225.webapp.service.UserService;
 import com.csye6225.webapp.service.ValidationService;
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import com.timgroup.statsd.NonBlockingStatsDClient;
+
 import com.timgroup.statsd.StatsDClient;
 
 import org.json.JSONObject;
@@ -51,7 +50,7 @@ public class UserController {
     CommonUtilsService commonUtilsService;
 
     @Autowired
-    private AmazonSNS snsCLient;
+    private AmazonSNSClient snsCLient;
 
     @Autowired
     StatsDClient statsd;
