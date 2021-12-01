@@ -27,6 +27,7 @@ public class CommonUtilsService {
         } else{
             obj.put("verified_on", "null");
         }
+        obj.put("verified", u.getVerified());
         return obj;
     }
 
