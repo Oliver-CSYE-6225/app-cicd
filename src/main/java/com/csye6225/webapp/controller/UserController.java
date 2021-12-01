@@ -90,7 +90,8 @@ public class UserController {
                 userService.saveUser(u);
                 return ResponseEntity.ok().body("User successfully verified");
             } else{
-                LOGGER.error("Token doesn't match:" + attrMap.get("Token") + " " + token);
+                LOGGER.error("Token doesn't match or token expired" + attrMap.get("Token").getS() + " " + token);
+                LOGGER.info("TimeToExist" + timeToExist + " Current Time:" + Instant.now().toEpochMilli());
                 // return ResponseEntity.ok().body("User successfully verified");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error in verifying user");
             }
