@@ -33,6 +33,7 @@ public class AuthenticationService {
                     String storedPassword = u.getPassword();
                     LOGGER.info("stored password for user: " + storedPassword);
                     boolean isVerified = u.getVerified();
+                    LOGGER.info("isVerified:" + isVerified);
                     if(isVerified && b.matches(tokens[1], storedPassword)) {
                         return true;
                     }
