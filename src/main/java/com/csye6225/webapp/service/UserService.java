@@ -42,7 +42,7 @@ public class UserService {
     // @Transactional("tm1")
     public User saveUser(User user) {
         long startTime = System.currentTimeMillis();
-        User foo = readUserRepository.saveAndFlush(user);
+        User foo = userRepository.saveAndFlush(user);
         statsd.recordExecutionTime("Save/Update User  Execution Time", startTime -  System.currentTimeMillis());
         return foo;
     }

@@ -88,12 +88,13 @@ import java.util.Optional;
 public class AuthenticationService {
 
     @Autowired
-    ReadUserRepository userRepository;
+    UserService userService;
 
     public boolean authenticateUser(String[] tokens) {
                 BCryptPasswordEncoder b = new BCryptPasswordEncoder(12);
-                String storedPassword = userRepository.findUserPassword(tokens[0]);
-                if(storedPassword != null && b.matches(tokens[1], storedPassword)) {
+                // String storedPassword = userRepository.findUserPassword(tokens[0]);
+                User u = userService.getUser(tokens[0]);
+                if(u!= null && u.getPassword() != null && b.matches(tokens[1], u.getPassword())) {
                     return true;
                 }
                 return false;
