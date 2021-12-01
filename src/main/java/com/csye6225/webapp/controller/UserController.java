@@ -120,21 +120,21 @@ public class UserController {
                 tokens = decodedTokenString.split(":", 2);
             }
             if (!authenticationService.authenticateUser(tokens)) {
-                statsd.recordExecutionTime("GetUser Execution Time", startTime - System.currentTimeMillis());
+                statsd.recordExecutionTime("Get User Execution Time", System.currentTimeMillis() - startTime);
                 LOGGER.error("Unauthorized User");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(new JSONObject().put("message", "Authorization Refused for the credentials provided.")
                                 .toString());
             }
         } else {
-            statsd.recordExecutionTime("GetUser Execution Time", startTime - System.currentTimeMillis());
+            statsd.recordExecutionTime("Get User Execution Time", System.currentTimeMillis() - startTime);
             LOGGER.error("Unauthorized User");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new JSONObject().put("message", "Authorization Refused for the credentials provided.")
                             .toString());
         }
         User userObj = userService.getUser(tokens[0]);
-
+        LOGGER.info("Get User Execution time " +  (System.currentTimeMillis() - startTime));
         statsd.recordExecutionTime("Get User Execution Time", System.currentTimeMillis() - startTime);
         return ResponseEntity.ok().body(commonUtilsService.getUserAsJSON(userObj).toString());
     }
