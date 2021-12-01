@@ -13,7 +13,6 @@ import com.csye6225.webapp.entity.User;
 /**
  * This is a read only repository
  */
-@org.springframework.stereotype.Repository
 @com.csye6225.webapp.config.ReadOnlyRepository
 public interface ReadUserRepository extends JpaRepository<User, Long> {
 
