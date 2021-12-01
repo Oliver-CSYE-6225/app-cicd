@@ -166,7 +166,7 @@ public class UserController {
         u.setVerified(false);
 
         try {
-            userService.saveUser(u);
+            u = userService.saveUser(u);
         } catch (Exception e) {
             JSONObject resObj = new JSONObject();
             if (e.getMessage().contains("constraint [usertable_username_key]")) {
@@ -185,7 +185,7 @@ public class UserController {
             }
         }
 
-        u = userService.getInitialUser(reqObj.getString("username"));
+        // u = userService.getInitialUser(reqObj.getString("username"));
         JSONObject snsMessage = new JSONObject();
         snsMessage.put("email", reqObj.getString("username"));
         snsMessage.put("token", u.getId() + "");
