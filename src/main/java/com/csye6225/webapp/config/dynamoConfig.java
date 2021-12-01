@@ -32,18 +32,18 @@ public class dynamoConfig {
 
         AmazonDynamoDB client = new AmazonDynamoDBClient(new DefaultAWSCredentialsProviderChain());
         client.setEndpoint("https://dynamodb.us-east-1.amazonaws.com");
-        Map<String, AttributeValue> map = new HashMap<>();
-        map.put("EmailId", new AttributeValue("oliverrodrigues996@gmail.com"));
-        GetItemResult g = null;
-        try{
-            g = client.getItem("tableName", map);
-        } catch(Exception e){
-            LOGGER.error(e.getMessage());
-            LOGGER.error("" + e.getStackTrace());
-        }
-        if(g != null){
-            LOGGER.info("My item dynamo: " + g.getItem());
-        }
+        // Map<String, AttributeValue> map = new HashMap<>();
+        // map.put("EmailId", new AttributeValue("oliverrodrigues996@gmail.com"));
+        // GetItemResult g = null;
+        // try{
+        //     g = client.getItem("tableName", map);
+        // } catch(Exception e){
+        //     LOGGER.error(e.getMessage());
+        //     LOGGER.error("" + e.getStackTrace());
+        // }
+        // if(g != null){
+        //     LOGGER.info("My item dynamo: " + g.getItem());
+        // }
         return client;
     }
 }
