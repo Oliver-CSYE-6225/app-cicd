@@ -81,10 +81,10 @@ public class UserController {
             LOGGER.info("My item dynamo: " + g.getItem());
             Map<String, AttributeValue> attrMap = g.getItem();
             AttributeValue tokenAttr = attrMap.get("Token");
-            // AttributeValue timeToExist = attrMap.get("TimeToExist");
-            // long expiryTime = Long.valueOf(timeToExist.getN()).longValue();
-            // if(expiryTime > Instant.now().toEpochMilli() && tokenAttr.getS().equals(token)){
-                if(tokenAttr.getS().equals(token)){
+            AttributeValue timeToExist = attrMap.get("TimeToExist");
+            long expiryTime = Long.valueOf(timeToExist.getN()).longValue();
+            if(expiryTime > System.currentTimeMillis()/1000 && tokenAttr.getS().equals(token)){
+                // if(tokenAttr.getS().equals(token)){
 
                 User u = userService.getUser(email);
                 u.setVerified(true);
@@ -93,8 +93,7 @@ public class UserController {
                 return ResponseEntity.ok().body("User successfully verified");
             } else{
                 LOGGER.error("Token doesn't match" + attrMap.get("Token").getS() + " " + token);
-                // LOGGER.info("TimeToExist" + timeToExist + " Current Time:" + Instant.now().toEpochMilli());
-                // return ResponseEntity.ok().body("User successfully verified");
+                LOGGER.info("TimeToExist" + expiryTime + " Current Time:" + System.currentTimeMillis()/1000);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User cannot be verified due to invalid verification link");
             }
 
@@ -107,7 +106,7 @@ public class UserController {
     @GetMapping(path = "/v1/user/self", produces = "application/json")
     public ResponseEntity<String> getUser(@RequestHeader HttpHeaders headers) {
         long startTime = System.currentTimeMillis();
-        statsd.incrementCounter("/v2/user/self");
+        statsd.incrementCounter("Get User /v1/user/self");
         // statsd.recordGaugeValue("baz", 100);
         // statsd.recordSetEvent("qux", "one");
         LOGGER.info("Get User Called");
@@ -136,7 +135,7 @@ public class UserController {
         }
         User userObj = userService.getUser(tokens[0]);
 
-        statsd.recordExecutionTime("GetUser Execution Time", startTime - System.currentTimeMillis());
+        statsd.recordExecutionTime("Get User Execution Time", System.currentTimeMillis() - startTime);
         return ResponseEntity.ok().body(commonUtilsService.getUserAsJSON(userObj).toString());
     }
 
