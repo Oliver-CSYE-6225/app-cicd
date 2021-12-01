@@ -25,7 +25,7 @@ public class UserService {
     public User getUser(String userName) {
         long startTime = System.currentTimeMillis();
         Optional<User> user = readUserRepository.findByUserName(userName);
-        statsd.recordExecutionTime("Fetch User  Execution Time", startTime -  System.currentTimeMillis());
+        statsd.recordExecutionTime("Fetch User  Execution Time", System.currentTimeMillis() - startTime);
 
         try{
             user.orElseThrow(() -> new NotFoundException("Not found: " + userName));
@@ -39,7 +39,7 @@ public class UserService {
     public User saveUser(User user) {
         long startTime = System.currentTimeMillis();
         User foo = userRepository.saveAndFlush(user);
-        statsd.recordExecutionTime("Save/Update User  Execution Time", startTime -  System.currentTimeMillis());
+        statsd.recordExecutionTime("Save/Update User  Execution Time", System.currentTimeMillis() - startTime);
         return foo;
     }
 

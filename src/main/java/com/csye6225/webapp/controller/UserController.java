@@ -68,6 +68,7 @@ public class UserController {
     @GetMapping(path = "/v1/verifyUserEmail", produces = "application/json")
     public ResponseEntity<String> verifyUserEmail(@RequestHeader HttpHeaders headers,
             @RequestParam("email") String email, @RequestParam("token") String token) {
+        statsd.incrementCounter("Get User /v1/verifyUserEmail");
         Map<String, AttributeValue> map = new HashMap<>();
         map.put("EmailId", new AttributeValue(email));
         GetItemResult g = null;
@@ -77,7 +78,7 @@ public class UserController {
             LOGGER.error(e.getMessage());
             LOGGER.error("" + e.getStackTrace());
         }
-        if (g != null) {
+        if (g.getItem() != null) {
             LOGGER.info("My item dynamo: " + g.getItem());
             Map<String, AttributeValue> attrMap = g.getItem();
             AttributeValue tokenAttr = attrMap.get("Token");
@@ -141,6 +142,7 @@ public class UserController {
 
     @PostMapping(path = "/v1/user", produces = "application/json")
     public ResponseEntity<String> postUser(@RequestHeader HttpHeaders headers, @RequestBody String reqBody) {
+        statsd.incrementCounter("Post User /v1/user");
         LOGGER.info("Post User Called");
         long startTime = System.currentTimeMillis();
         JSONObject reqObj = new JSONObject(reqBody);
@@ -169,7 +171,7 @@ public class UserController {
             JSONObject resObj = new JSONObject();
             if (e.getMessage().contains("constraint [usertable_username_key]")) {
                 resObj.put("message", "Username already exists.");
-                statsd.recordExecutionTime("Post User Execution Time", startTime - System.currentTimeMillis());
+                statsd.recordExecutionTime("Post User Execution Time", System.currentTimeMillis() - startTime);
                 LOGGER.error("Duplicate Username");
                 // TODO: Remove following block after testing
                 u = userService.getUser(reqObj.getString("username"));
@@ -183,7 +185,7 @@ public class UserController {
             } else {
                 LOGGER.error("Error in saving user Information" + e.getMessage());
                 resObj.put("message", "Unable to Save User Information. Please try again.");
-                statsd.recordExecutionTime("Post User Execution Time", startTime - System.currentTimeMillis());
+                statsd.recordExecutionTime("Post User Execution Time", System.currentTimeMillis() - startTime);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resObj.toString());
             }
         }
@@ -195,13 +197,14 @@ public class UserController {
         snsMessage.put("message_type", "user_created");
         snsCLient.publish(snsTopic, snsMessage.toString());
 
-        statsd.recordExecutionTime("Post User Execution Time", startTime - System.currentTimeMillis());
+        statsd.recordExecutionTime("Post User Execution Time", System.currentTimeMillis() - startTime);
         return ResponseEntity.status(HttpStatus.CREATED).body(commonUtilsService.getUserAsJSON(u).toString());
     }
 
     @PutMapping(path = "/v1/user/self", produces = "application/json")
     public ResponseEntity<String> putUser(@RequestHeader HttpHeaders headers, @RequestBody String reqBody) {
-        LOGGER.info("Post User Called");
+        statsd.incrementCounter("Update User /v1/user/self");
+        LOGGER.info("Updte User Called");
         long startTime = System.currentTimeMillis();
         String authorization = headers.getFirst("Authorization");
         String decodedTokenString = authenticationService.decodeBasicAuthToken(authorization);
@@ -260,12 +263,12 @@ public class UserController {
             JSONObject resObj = new JSONObject();
             resObj.put("statusCode", HttpStatus.INTERNAL_SERVER_ERROR);
             resObj.put("message", "Unable to Update User Information. Please try again.");
-            statsd.recordExecutionTime("Update User Execution Time", startTime - System.currentTimeMillis());
+            statsd.recordExecutionTime("Update User Execution Time", System.currentTimeMillis() - startTime);
             LOGGER.error("Unable to update user information");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resObj.toString());
         }
 
-        statsd.recordExecutionTime("Update User Execution Time", startTime - System.currentTimeMillis());
+        statsd.recordExecutionTime("Update User Execution Time", System.currentTimeMillis() - startTime);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(updateObj.toString());
     }
 

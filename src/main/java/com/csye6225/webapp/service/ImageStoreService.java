@@ -57,7 +57,7 @@ public class ImageStoreService {
         // Add picture to s3 bucket
         long startTime = System.currentTimeMillis();
         s3Client.putObject(new PutObjectRequest(bucketName, filename, fileObject));
-        statsd.recordExecutionTime("Post Image S3", startTime -  System.currentTimeMillis());
+        statsd.recordExecutionTime("Post Image S3", System.currentTimeMillis() - startTime);
         fileObject.delete();
 
         // Get Current Date
@@ -118,7 +118,7 @@ public class ImageStoreService {
     public String deleteFile(String fileName) {
         long startTime = System.currentTimeMillis();
         s3Client.deleteObject(bucketName, fileName);
-        statsd.recordExecutionTime("Delete Image S3", startTime -  System.currentTimeMillis());
+        statsd.recordExecutionTime("Delete Image S3", System.currentTimeMillis() - startTime);
         return fileName + " removed ...";
     }
 

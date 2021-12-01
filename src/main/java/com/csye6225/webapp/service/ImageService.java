@@ -31,7 +31,7 @@ public class ImageService {
 
         Optional<Image> image = readImageRepository.findByUserId(user_id);
 
-        statsd.recordExecutionTime("Fetch Image Meta Execution Time", startTime -  System.currentTimeMillis());
+        statsd.recordExecutionTime("Fetch Image Meta Execution Time", System.currentTimeMillis() - startTime);
 
 //        try{
 //            image.orElseThrow(() -> new NotFoundException("Not found: " + user_id));
@@ -46,7 +46,7 @@ public class ImageService {
     public Image saveImageMetaData(Image image) {
         long startTime = System.currentTimeMillis();
         Image foo = imageRepository.saveAndFlush(image);
-        statsd.recordExecutionTime("Save Image Meta Execution Time", startTime -  System.currentTimeMillis());
+        statsd.recordExecutionTime("Save Image Meta Execution Time", System.currentTimeMillis() - startTime);
         return foo;
 
     }
@@ -54,7 +54,7 @@ public class ImageService {
     public void deleteImageMetaData(Image image) {
         long startTime = System.currentTimeMillis();
          imageRepository.deleteById(image.getId());
-         statsd.recordExecutionTime("Delete Image Meta Execution Time", startTime -  System.currentTimeMillis());
+         statsd.recordExecutionTime("Delete Image Meta Execution Time", System.currentTimeMillis() - startTime);
     }
 
 }
