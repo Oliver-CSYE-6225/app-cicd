@@ -81,23 +81,26 @@ public class UserController {
             LOGGER.info("My item dynamo: " + g.getItem());
             Map<String, AttributeValue> attrMap = g.getItem();
             AttributeValue tokenAttr = attrMap.get("Token");
-            AttributeValue timeToExist = attrMap.get("TimeToExist");
-            long expiryTime = Long.valueOf(timeToExist.getN()).longValue();
-            if(expiryTime > Instant.now().toEpochMilli() && tokenAttr.getS().equals(token)){
+            // AttributeValue timeToExist = attrMap.get("TimeToExist");
+            // long expiryTime = Long.valueOf(timeToExist.getN()).longValue();
+            // if(expiryTime > Instant.now().toEpochMilli() && tokenAttr.getS().equals(token)){
+                if(tokenAttr.getS().equals(token)){
+
                 User u = userService.getUser(email);
                 u.setVerified(true);
                 u.setAccount_verified();
                 userService.saveUser(u);
                 return ResponseEntity.ok().body("User successfully verified");
             } else{
-                LOGGER.error("Token doesn't match:" + attrMap.get("Token") + " " + token);
+                LOGGER.error("Token doesn't match" + attrMap.get("Token").getS() + " " + token);
+                // LOGGER.info("TimeToExist" + timeToExist + " Current Time:" + Instant.now().toEpochMilli());
                 // return ResponseEntity.ok().body("User successfully verified");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error in verifying user");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User cannot be verified due to invalid verification link");
             }
 
         }else{
             LOGGER.error("Record does not exist in dynamo db");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error in verifying user");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The verification link has expired");
         }
     }
 
