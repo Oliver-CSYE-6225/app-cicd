@@ -3,6 +3,7 @@ package com.csye6225.webapp.service;
 import com.csye6225.webapp.entity.Image;
 import com.csye6225.webapp.entity.User;
 import com.csye6225.webapp.repository.ImageRepository;
+import com.csye6225.webapp.repository.ReadImageRepository;
 import com.csye6225.webapp.repository.UserRepository;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +21,15 @@ public class ImageService {
     ImageRepository imageRepository;
 
     @Autowired
+    ReadImageRepository readImageRepository;
+
+    @Autowired
     StatsDClient statsd;
 
-    // @Transactional("tm2")
     public Image getImageMetaData(UUID user_id) throws NotFoundException {
         long startTime = System.currentTimeMillis();
 
-        Optional<Image> image = imageRepository.findByUserId(user_id);
+        Optional<Image> image = readImageRepository.findByUserId(user_id);
 
         statsd.recordExecutionTime("Fetch Image Meta Execution Time", startTime -  System.currentTimeMillis());
 
@@ -40,7 +43,6 @@ public class ImageService {
         return image.get();
     }
 
-    // @Transactional("tm1")
     public Image saveImageMetaData(Image image) {
         long startTime = System.currentTimeMillis();
         Image foo = imageRepository.saveAndFlush(image);
@@ -49,7 +51,6 @@ public class ImageService {
 
     }
 
-    // @Transactional("tm1")
     public void deleteImageMetaData(Image image) {
         long startTime = System.currentTimeMillis();
          imageRepository.deleteById(image.getId());
