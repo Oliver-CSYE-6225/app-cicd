@@ -84,6 +84,7 @@ public class UserController {
                 User u = userService.getUser(email);
                 u.setVerified(true);
                 u.setAccount_verified();
+                userService.saveUser(u);
                 return ResponseEntity.ok().body("User successfully verified");
             } else{
                 LOGGER.error("Token doesn't match:" + attrMap.get("Token") + " " + token);
