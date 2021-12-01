@@ -83,7 +83,8 @@ public class UserController {
         if (g != null) {
             LOGGER.info("My item dynamo: " + g.getItem());
             Map<String, AttributeValue> attrMap = g.getItem();
-            if(attrMap.get("Token").equals(token)){
+            AttributeValue tokenAttr = attrMap.get("Token");
+            if(tokenAttr.getS().equals(token)){
                 User u = userService.getUser(email);
                 u.setVerified(true);
                 u.setAccount_verified();
