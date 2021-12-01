@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -80,7 +81,9 @@ public class UserController {
             LOGGER.info("My item dynamo: " + g.getItem());
             Map<String, AttributeValue> attrMap = g.getItem();
             AttributeValue tokenAttr = attrMap.get("Token");
-            if(tokenAttr.getS().equals(token)){
+            AttributeValue timeToExist = attrMap.get("TimeToExist");
+            long expiryTime = Long.valueOf(timeToExist.getN()).longValue();
+            if(expiryTime > Instant.now().toEpochMilli() && tokenAttr.getS().equals(token)){
                 User u = userService.getUser(email);
                 u.setVerified(true);
                 u.setAccount_verified();
