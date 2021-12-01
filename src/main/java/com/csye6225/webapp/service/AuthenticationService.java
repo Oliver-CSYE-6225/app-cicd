@@ -20,7 +20,7 @@ import java.util.Optional;
 public class AuthenticationService {
 
     @Autowired
-    ReadUserRepository readUserRepository;
+    UserRepository readUserRepository;
 
     private static final Logger LOGGER=LoggerFactory.getLogger(AuthenticationService.class);
 
