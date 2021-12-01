@@ -176,11 +176,6 @@ public class UserController {
                 // TODO: Remove following block after testing
                 u = userService.getUser(reqObj.getString("username"));
                 System.out.println("duplicate user"+u.getUsername());
-                JSONObject snsMessage = new JSONObject();
-                snsMessage.put("email", reqObj.getString("username"));
-                snsMessage.put("token", u.getId() + "");
-                snsMessage.put("message_type", "user_created");
-                snsCLient.publish(snsTopic, snsMessage.toString());
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resObj.toString());
             } else {
                 LOGGER.error("Error in saving user Information" + e.getMessage());
