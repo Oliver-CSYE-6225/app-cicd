@@ -5,8 +5,6 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.GetItemResult;
 import com.amazonaws.services.sns.AmazonSNSClient;
 import com.csye6225.webapp.entity.User;
-import com.csye6225.webapp.repository.ReadUserRepository;
-import com.csye6225.webapp.repository.UserRepository;
 import com.csye6225.webapp.service.AuthenticationService;
 import com.csye6225.webapp.service.CommonUtilsService;
 import com.csye6225.webapp.service.UserService;
@@ -34,9 +32,6 @@ public class UserController {
 
     @Autowired
     UserService userService;
-
-    @Autowired
-    ReadUserRepository userRepository;
 
     @Autowired
     AuthenticationService authenticationService;

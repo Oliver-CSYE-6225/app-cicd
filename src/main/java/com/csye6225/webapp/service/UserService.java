@@ -4,10 +4,8 @@ import com.csye6225.webapp.entity.User;
 import com.csye6225.webapp.repository.ReadUserRepository;
 import com.csye6225.webapp.repository.UserRepository;
 import javassist.NotFoundException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.timgroup.statsd.StatsDClient;
 
@@ -24,7 +22,6 @@ public class UserService {
     @Autowired
     StatsDClient statsd;
 
-    // @Transactional("tm2")
     public User getUser(String userName) {
         long startTime = System.currentTimeMillis();
         Optional<User> user = readUserRepository.findByUserName(userName);
@@ -39,7 +36,6 @@ public class UserService {
         return user.get();
     }
 
-    // @Transactional("tm1")
     public User saveUser(User user) {
         long startTime = System.currentTimeMillis();
         User foo = userRepository.saveAndFlush(user);
