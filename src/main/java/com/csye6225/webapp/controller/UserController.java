@@ -69,7 +69,7 @@ public class UserController {
     public ResponseEntity<String> verifyUserEmail(@RequestHeader HttpHeaders headers,
             @RequestParam("email") String email, @RequestParam("token") String token) {
         Map<String, AttributeValue> map = new HashMap<>();
-        map.put("EmailId", new AttributeValue("oliverrodrigues996@gmail.com"));
+        map.put("EmailId", new AttributeValue(email));
         GetItemResult g = null;
         try {
             g = dynamoClient.getItem("Email-Tokens", map);
