@@ -2,7 +2,6 @@ package com.csye6225.webapp.service;
 
 import com.csye6225.webapp.entity.User;
 import com.csye6225.webapp.repository.ReadUserRepository;
-import com.csye6225.webapp.repository.UserRepository;
 import javassist.NotFoundException;
 
 import org.slf4j.Logger;
@@ -24,27 +23,35 @@ public class AuthenticationService {
 
     private static final Logger LOGGER=LoggerFactory.getLogger(AuthenticationService.class);
 
-    public boolean authenticateUser(String[] tokens) {
-                BCryptPasswordEncoder b = new BCryptPasswordEncoder(12);
-                // Optional<User> user = readUserRepository.findByUserName(tokens[0]);
+    // public boolean authenticateUser(String[] tokens) {
+    //             BCryptPasswordEncoder b = new BCryptPasswordEncoder(12);
+    //             // Optional<User> user = readUserRepository.findByUserName(tokens[0]);
         
-                // try{
-                //     user.orElseThrow(() -> new NotFoundException("Not found: " + tokens[0]));
-                // }catch(Exception e){
-                //     System.out.println("User" +  user);
-                // } 
-                // User u = user.get();               
-                String storedPassword = readUserRepository.findUserPassword(tokens[0]);
-                // String storedPassword = u.getPassword();
-                // boolean isVerified = u.getVerified();
+    //             // try{
+    //             //     user.orElseThrow(() -> new NotFoundException("Not found: " + tokens[0]));
+    //             // }catch(Exception e){
+    //             //     System.out.println("User" +  user);
+    //             // } 
+    //             // User u = user.get();               
+    //             String storedPassword = readUserRepository.findUserPassword(tokens[0]);
+    //             // String storedPassword = u.getPassword();
+    //             // boolean isVerified = u.getVerified();
 
-                LOGGER.info("stored password for user: " + storedPassword);
-                if(storedPassword != null && b.matches(tokens[1], storedPassword)) {
-                    return true;
-                }
-                return false;
-    }
+    //             LOGGER.info("stored password for user: " + storedPassword);
+    //             if(storedPassword != null && b.matches(tokens[1], storedPassword)) {
+    //                 return true;
+    //             }
+    //             return false;
+    // }
 
+    public boolean authenticateUser(String[] tokens) {
+        BCryptPasswordEncoder b = new BCryptPasswordEncoder(12);
+        String storedPassword = readUserRepository.findUserPassword(tokens[0]);
+        if(storedPassword != null && b.matches(tokens[1], storedPassword)) {
+            return true;
+        }
+        return false;
+}
 
 
 
