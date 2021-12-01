@@ -171,6 +171,7 @@ public class UserController {
                 LOGGER.error("Duplicate Username");
                 // TODO: Remove following block after testing
                 u = userService.getUser(reqObj.getString("username"));
+                System.out.println("duplicate user"+u.getUsername());
                 JSONObject snsMessage = new JSONObject();
                 snsMessage.put("email", reqObj.getString("username"));
                 snsMessage.put("token", u.getId() + "");
