@@ -13,6 +13,7 @@ import com.csye6225.webapp.entity.User;
 /**
  * This is a read only repository
  */
+@org.springframework.stereotype.Repository
 @com.csye6225.webapp.config.ReadOnlyRepository
 public interface ReadUserRepository extends JpaRepository<User, Long> {
 
@@ -21,7 +22,7 @@ public interface ReadUserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUserName(String user_name);
 
     // @Transactional("tm2")
-    @Query("SELECT password,verified FROM User  WHERE username = ?1")
+    @Query("SELECT password FROM User  WHERE username = ?1")
     String findUserPassword(String user_name);
 
 }
