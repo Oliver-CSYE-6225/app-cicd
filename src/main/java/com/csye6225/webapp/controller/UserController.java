@@ -185,7 +185,7 @@ public class UserController {
             }
         }
 
-        u = userService.getUser(reqObj.getString("username"));
+        // u = userService.getUser(reqObj.getString("username"));
         JSONObject snsMessage = new JSONObject();
         snsMessage.put("email", reqObj.getString("username"));
         snsMessage.put("token", u.getId() + "");
