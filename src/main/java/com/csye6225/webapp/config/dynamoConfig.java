@@ -31,7 +31,8 @@ public class dynamoConfig {
     public static AmazonDynamoDB dynamoClient() {
 
         AmazonDynamoDB client = new AmazonDynamoDBClient(new DefaultAWSCredentialsProviderChain());
-        client.setEndpoint(amazonDynamoDBEndpoint);
+        LOGGER.info("Dynamo endpoint" + amazonDynamoDBEndpoint);
+        client.setEndpoint("https://dynamodb.us-east-1.amazonaws.com");
         return client;
     }
 }
